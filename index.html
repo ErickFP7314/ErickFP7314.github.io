@@ -126,15 +126,17 @@
       </div>
     </section>
 
-    <!-- 03 LOGROS (poster izquierda + Tres en Raya embebido a la derecha) -->
+    <!-- 03 LOGROS (Tres en Raya embebido a la izquierda + poster a la derecha).
+         La lluvia binaria vive como fondo de TODA la sección (canvas absoluto),
+         igual que .formacion-bg en la 05: texto y juego comparten un solo espacio. -->
     <section class="section section--poster section--logros" id="section3" data-index="2" aria-label="Logros">
+      <canvas class="poster-canvas section-bg-canvas" data-poster="logros" aria-hidden="true"></canvas>
       <div class="logros-split">
         <div class="ttt-embed">
           <p class="ttt-embed-label mono">// tres en raya · tú vs CPU</p>
           <div id="ticTacToe" data-render="tictactoe"></div>
         </div>
         <a class="poster-link logros-poster" href="logros.html" aria-label="Entrar a la sección Logros">
-          <canvas class="poster-canvas" data-poster="logros" aria-hidden="true"></canvas>
           <div class="poster-overlay">
             <span class="poster-kicker mono">03 · LOGROS</span>
             <span class="poster-title mono">Logros</span>
@@ -143,14 +145,18 @@
           </div>
         </a>
       </div>
+      <button type="button" class="pf-mobile-play mono" data-modal-game="tictactoe" aria-label="Jugar Tres en Raya">
+        <span class="pf-mobile-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5Z"/></svg></span>
+        <span>Jugar</span>
+      </button>
     </section>
 
     <!-- 04 PROYECTOS (poster izquierda + Blocks 3D jugable in-place a la derecha) -->
     <section class="section section--poster section--proyectos" id="section4" data-index="3" aria-label="Proyectos">
+      <canvas class="poster-canvas section-bg-canvas" data-poster="proyectos" aria-hidden="true"></canvas>
       <div class="proyectos-sweep" aria-hidden="true"></div>
       <div class="proyectos-split">
         <a class="poster-link proyectos-poster" href="proyectos.html" aria-label="Entrar a la sección Proyectos">
-          <canvas class="poster-canvas" data-poster="proyectos" aria-hidden="true"></canvas>
           <div class="poster-overlay">
             <span class="poster-kicker mono">04 · PROYECTOS</span>
             <span class="poster-title mono">Proyectos</span>
@@ -160,9 +166,14 @@
         </a>
         <div class="blocks-embed" id="blocksEmbed" data-embed="blocks"></div>
       </div>
+      <button type="button" class="pf-mobile-play mono" data-modal-game="blocks" aria-label="Jugar Blocks 3D">
+        <span class="pf-mobile-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5Z"/></svg></span>
+        <span>Jugar</span>
+      </button>
     </section>
 
-    <!-- 05 FORMACIÓN (Diana embebida a la izquierda + poster/texto a la derecha) -->
+    <!-- 05 FORMACIÓN (Typer embebido a la izquierda + poster/texto a la derecha).
+         Mismo tratamiento sin divisiones: .formacion-bg de fondo compartido. -->
     <section class="section section--poster section--formacion" id="section5" data-index="4" aria-label="Formación">
       <div class="formacion-bg" aria-hidden="true">
         <span class="formacion-ripple"></span>
@@ -170,7 +181,7 @@
         <span class="formacion-ripple"></span>
       </div>
       <div class="formacion-split">
-        <div class="diana-embed" id="dianaEmbed" data-embed="diana"></div>
+        <div class="typer-embed" id="typerEmbed" data-embed="typing"></div>
         <a class="poster-link formacion-poster" href="formacion.html" aria-label="Entrar a la sección Formación">
           <div class="poster-overlay">
             <span class="poster-kicker mono">05 · FORMACIÓN</span>
@@ -180,6 +191,10 @@
           </div>
         </a>
       </div>
+      <button type="button" class="pf-mobile-play mono" data-modal-game="typing" aria-label="Jugar Typer">
+        <span class="pf-mobile-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5Z"/></svg></span>
+        <span>Jugar</span>
+      </button>
     </section>
 
     <!-- 06 CONTACTO -->
@@ -226,9 +241,10 @@
   <!-- Vendored three.js (r128, LOCAL — no CDN at runtime) for the Blocks 3D game -->
   <script src="assets/vendor/three.min.js" defer></script>
   <script src="js/games/embed.js" defer></script>
+  <script src="js/games/modal.js" defer></script>
   <script src="js/games/tictactoe.js" defer></script>
   <script src="js/games/blocks3d.js" defer></script>
-  <script src="js/games/diana.js" defer></script>
+  <script src="js/games/typing.js" defer></script>
   <script src="js/lightbox.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>

@@ -16,6 +16,15 @@ window.PF = window.PF || {};
     isTouch: !window.matchMedia('(hover: hover) and (pointer: fine)').matches
   };
 
+  // Batch 6B: chevron icons for the manual image carousel + Facebook mark for
+  // the medal-of-gold source link. Inline SVG only — no emojis, no CDN.
+  var CHEVRON_LEFT =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>';
+  var CHEVRON_RIGHT =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>';
+  var FACEBOOK_SVG =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12Z"/></svg>';
+
   var PAGES = {
     logros: { anchor: 'section3', label: 'LOGROS', data: 'logros', render: renderLogros },
     proyectos: { anchor: 'section4', label: 'PROYECTOS', data: 'projects', render: renderProject },
@@ -56,6 +65,7 @@ window.PF = window.PF || {};
     buildRailNodes(items);
     setupObserver(items.length);
     scaleIframeCovers();
+    initCarousels();
     dismissLoading();
   }
 
@@ -88,12 +98,80 @@ window.PF = window.PF || {};
 
   // ---- item renderers ---------------------------------------------------
 
+  // Batch 6B: projects with a single image keep the plain gallery (no
+  // controls). Projects with 2+ images (Tetris, Tic-Tac-Toe, verificador de
+  // billetes) render a classic MANUAL carousel: one image visible at a time,
+  // prev/next chevrons (>=44px, aria-label, keyboard/focus-visible cyan),
+  // and a "n / total" counter + dots. No autoplay. Clicking the visible
+  // image still opens the lightbox (it matches ".item-media img").
   function mediaGallery(images) {
     if (!images || !images.length) return '';
-    return '<div class="item-media">' + images.map(function (im) {
+    if (images.length === 1) {
+      var only = images[0];
+      return '<div class="item-media"><img src="' + esc(only.src) + '" width="' + only.w +
+        '" height="' + only.h + '" loading="lazy" alt="' + esc(only.alt) + '" /></div>';
+    }
+    var slides = images.map(function (im, i) {
       return '<img src="' + esc(im.src) + '" width="' + im.w + '" height="' + im.h +
-        '" loading="lazy" alt="' + esc(im.alt) + '" />';
-    }).join('') + '</div>';
+        '" loading="lazy" alt="' + esc(im.alt) + '" class="carousel-slide' +
+        (i === 0 ? ' is-active' : '') + '" data-slide="' + i + '" />';
+    }).join('');
+    var dots = images.map(function (im, i) {
+      return '<button type="button" class="carousel-dot' + (i === 0 ? ' is-active' : '') +
+        '" data-goto="' + i + '" aria-label="Ir a la imagen ' + (i + 1) + '"' +
+        (i === 0 ? ' aria-current="true"' : '') + '></button>';
+    }).join('');
+    return (
+      '<div class="item-media item-carousel" data-count="' + images.length + '">' +
+      '<div class="carousel-track">' + slides + '</div>' +
+      '<button type="button" class="carousel-btn carousel-prev" aria-label="Imagen anterior">' + CHEVRON_LEFT + '</button>' +
+      '<button type="button" class="carousel-btn carousel-next" aria-label="Imagen siguiente">' + CHEVRON_RIGHT + '</button>' +
+      '<div class="carousel-meta">' +
+      '<span class="carousel-count mono" aria-live="polite">1 / ' + images.length + '</span>' +
+      '<div class="carousel-dots">' + dots + '</div>' +
+      '</div>' +
+      '</div>'
+    );
+  }
+
+  // Wires prev/next/dots + Left/Right keyboard for every carousel rendered by
+  // mediaGallery(). Runs once after the item HTML is inserted into the DOM.
+  function initCarousels() {
+    var carousels = document.querySelectorAll('.item-carousel');
+    carousels.forEach(function (car) {
+      var slides = Array.prototype.slice.call(car.querySelectorAll('.carousel-slide'));
+      var dots = Array.prototype.slice.call(car.querySelectorAll('.carousel-dot'));
+      var counter = car.querySelector('.carousel-count');
+      var prevBtn = car.querySelector('.carousel-prev');
+      var nextBtn = car.querySelector('.carousel-next');
+      var count = slides.length;
+      var idx = 0;
+      if (!count) return;
+
+      function render() {
+        slides.forEach(function (s, i) { s.classList.toggle('is-active', i === idx); });
+        dots.forEach(function (d, i) {
+          d.classList.toggle('is-active', i === idx);
+          d.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+        if (counter) counter.textContent = (idx + 1) + ' / ' + count;
+      }
+
+      function goTo(n) {
+        idx = ((n % count) + count) % count;
+        render();
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', function () { goTo(idx - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { goTo(idx + 1); });
+      dots.forEach(function (d) {
+        d.addEventListener('click', function () { goTo(Number(d.getAttribute('data-goto'))); });
+      });
+      car.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(idx - 1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(idx + 1); }
+      });
+    });
   }
 
   // Checkpoint 3: EcoAlerta uses a backup video instead of a static shot.
@@ -134,6 +212,14 @@ window.PF = window.PF || {};
   function renderLogros(l) {
     var meta = [];
     if (l.issuer) meta.push(l.issuer);
+    var linkHtml = '';
+    if (l.link) {
+      var iconHtml = l.linkIcon === 'facebook'
+        ? '<span class="item-link-icon" aria-hidden="true">' + FACEBOOK_SVG + '</span>'
+        : '↗ ';
+      linkHtml = '<a class="item-link" href="' + esc(l.link) + '" target="_blank" rel="noopener noreferrer">' +
+        iconHtml + esc(l.linkLabel || 'Ver más') + '</a>';
+    }
     var body =
       '<div class="item-body">' +
       '<span class="item-date mono">' + esc(l.date) + '</span>' +
@@ -141,11 +227,19 @@ window.PF = window.PF || {};
       '<h2 class="item-title">' + esc(l.title) + '</h2>' +
       (meta.length ? '<p class="item-meta">' + esc(meta.join(' · ')) + '</p>' : '') +
       '<p class="item-desc">' + esc(l.description) + '</p>' +
-      (l.link ? '<a class="item-link" href="' + esc(l.link) + '" target="_blank" rel="noopener noreferrer">↗ ' + esc(l.linkLabel || 'Ver más') + '</a>' : '') +
+      linkHtml +
       '</div>';
     var media;
     if (l.gold) {
-      media = '<div class="medal-badge" role="img" aria-label="Medalla de Oro nacional">★</div>';
+      // Batch 6B: the 2020 medallero photo now illustrates the gold medal
+      // item (with a small ★ accent) instead of a bare star glyph.
+      if (l.image) {
+        media = '<div class="item-media gold-media"><div class="medal-badge-mini" aria-hidden="true">★</div>' +
+          '<img src="' + esc(l.image.src) + '" width="' + l.image.w + '" height="' + l.image.h +
+          '" loading="lazy" alt="' + esc(l.image.alt) + '" /></div>';
+      } else {
+        media = '<div class="medal-badge" role="img" aria-label="Medalla de Oro nacional">★</div>';
+      }
     } else if (l.image) {
       media = '<div class="item-media cert-frame"><img src="' + esc(l.image.src) + '" width="' + l.image.w +
         '" height="' + l.image.h + '" loading="lazy" alt="' + esc(l.image.alt) + '" /></div>';

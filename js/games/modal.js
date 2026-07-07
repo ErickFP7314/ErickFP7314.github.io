@@ -30,8 +30,9 @@ PF.games = PF.games || {};
   PF.games.META = {
     snake: { title: 'SNAKE', hint: 'Flechas o desliza el dedo · come y crece, no choques' },
     pong: { title: 'PONG', hint: 'Flechas ↑/↓ o arrastra · el primero en llegar a 5 gana' },
-    typing: { title: 'TYPING TEST', hint: 'Escribe el snippet completo antes de que se acabe el tiempo' },
-    blocks: { title: 'BLOCKS', hint: 'Clic, espacio o toque · encaja el bloque en movimiento' },
+    typing: { title: 'TYPER', hint: 'Elige un lenguaje y escribe el código · space/enter/tab cuentan' },
+    blocks: { title: 'BLOCKS', hint: 'Toca o espacio · encaja el bloque en movimiento' },
+    tictactoe: { title: 'TRES EN RAYA', hint: 'Toca una casilla · eres la X, la CPU es la O' },
     diana: { title: 'DIANA', hint: 'Arrastra desde el arco y suelta para disparar' }
   };
 
@@ -54,6 +55,11 @@ PF.games = PF.games || {};
       close();
       return;
     }
+    // Typer OWNS its keyboard: it needs Space/Enter/Tab as typeable characters,
+    // so the modal must NOT swallow them (this was the root cause of the "no
+    // puedo escribir espacio/enter/tab" bug — the focus-trap + scroll-guard
+    // below were eating those keys). Only keep Escape-to-close for typing.
+    if (activeId === 'typing') return;
     if (e.key === 'Tab') {
       var list = focusablesIn(overlay);
       if (!list.length) return;

@@ -61,6 +61,10 @@ PF.games = PF.games || {};
     return free.length ? free[(Math.random() * free.length) | 0] : -1;
   }
 
+  // Tracks the pending "CPU thinking" timeout so the modal adapter can cancel
+  // it on close (contract: stop() must clear all timers).
+  var cpuTimer = null;
+
   function mount(host) {
     if (!host) return;
     host.classList.add('ttt');
@@ -167,7 +171,8 @@ PF.games = PF.games || {};
       locked = true;
       setStatus('CPU pensando…');
       paint();
-      setTimeout(cpuTurn, 340);
+      if (cpuTimer) clearTimeout(cpuTimer);
+      cpuTimer = setTimeout(cpuTurn, 340);
     }
 
     function reset() {
@@ -182,5 +187,12 @@ PF.games = PF.games || {};
     paint();
   }
 
-  PF.games.tictactoe = { mount: mount };
+  // mount() powers the always-on Logros embed. The init/start/stop trio lets
+  // the SAME board run inside the shared game modal (T6, mobile "Jugar").
+  PF.games.tictactoe = {
+    mount: mount,
+    init: function (mountEl) { mount(mountEl); },
+    start: function () { /* board is interactive on mount; nothing to spin up */ },
+    stop: function () { if (cpuTimer) { clearTimeout(cpuTimer); cpuTimer = null; } }
+  };
 })();

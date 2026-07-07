@@ -98,18 +98,45 @@ PF.games = PF.games || {};
       : new THREE.Color().setHSL(120 / 360, 1, 0.50);  // green
   }
 
+  // Checkpoint 6 (T2): every block gets a crisp complementary EDGE outline via
+  // EdgesGeometry + LineSegments (r128), added as a CHILD so it inherits the
+  // block's position/rotation. Edge color = a darker shade of the block color
+  // so it reads as a neon rim without changing the green↔cyan alternation.
+  function addEdges(mesh, color) {
+    var edgeGeo = new THREE.EdgesGeometry(mesh.geometry);
+    var edgeColor = (color && color.clone) ? color.clone() : new THREE.Color(color);
+    edgeColor.offsetHSL(0, 0.08, -0.26);
+    var lines = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: edgeColor }));
+    lines.name = 'pf-edges';
+    mesh.add(lines);
+    return lines;
+  }
+
+  function disposeMesh(mesh) {
+    if (!mesh) return;
+    for (var i = mesh.children.length - 1; i >= 0; i--) {
+      var c = mesh.children[i];
+      if (c.geometry) c.geometry.dispose();
+      if (c.material) c.material.dispose();
+      mesh.remove(c);
+    }
+    if (mesh.geometry) mesh.geometry.dispose();
+    if (mesh.material) mesh.material.dispose();
+  }
+
   function makeBlock(dim, pos, color) {
     var geo = new THREE.BoxGeometry(dim.x, dim.y, dim.z);
     var mat = new THREE.MeshToonMaterial({ color: color });
     var mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(pos.x, pos.y, pos.z);
+    addEdges(mesh, mat.color);
     scene.add(mesh);
     return mesh;
   }
 
   function clearScene() {
-    blocks.forEach(function (b) { scene.remove(b.mesh); b.mesh.geometry.dispose(); b.mesh.material.dispose(); });
-    chopped.forEach(function (m) { scene.remove(m); m.geometry.dispose(); m.material.dispose(); });
+    blocks.forEach(function (b) { scene.remove(b.mesh); disposeMesh(b.mesh); });
+    chopped.forEach(function (m) { scene.remove(m); disposeMesh(m); });
     blocks = [];
     chopped = [];
     current = null;
@@ -174,6 +201,14 @@ PF.games = PF.games || {};
     var placedCenter = base.pos[axis] + offset / 2;
 
     scene.remove(current.mesh);
+    // dispose the old edge outline (geometry + material) but KEEP the shared box
+    // material — the trimmed placed block reuses current.mesh.material below.
+    for (var ci = current.mesh.children.length - 1; ci >= 0; ci--) {
+      var cc = current.mesh.children[ci];
+      if (cc.geometry) cc.geometry.dispose();
+      if (cc.material) cc.material.dispose();
+      current.mesh.remove(cc);
+    }
     current.mesh.geometry.dispose();
     var newDim = { x: current.dim.x, y: BLOCK_H, z: current.dim.z };
     newDim[dimKey] = overlap;
@@ -181,6 +216,7 @@ PF.games = PF.games || {};
     newPos[axis] = placedCenter;
     var placedMesh = new THREE.Mesh(new THREE.BoxGeometry(newDim.x, newDim.y, newDim.z), current.mesh.material);
     placedMesh.position.set(newPos.x, newPos.y, newPos.z);
+    addEdges(placedMesh, placedMesh.material.color);
     scene.add(placedMesh);
     blocks.push({ mesh: placedMesh, dim: newDim, pos: newPos, axis: axis });
 
@@ -193,6 +229,7 @@ PF.games = PF.games || {};
       chMesh.position.set(chPos.x, chPos.y, chPos.z);
       chMesh.userData.vy = -0.05;
       chMesh.userData.side = offset > 0 ? 1 : -1;
+      addEdges(chMesh, chMesh.material.color);
       scene.add(chMesh);
       chopped.push(chMesh);
     }
@@ -227,7 +264,7 @@ PF.games = PF.games || {};
       m.position.y += m.userData.vy;
       m.rotation.x += 0.04;
       m.rotation.z += 0.03 * (m.userData.side || 1);
-      if (m.position.y < camY - 40) { scene.remove(m); m.geometry.dispose(); chopped.splice(i, 1); }
+      if (m.position.y < camY - 40) { scene.remove(m); disposeMesh(m); chopped.splice(i, 1); }
     }
     camY += (camTargetY - camY) * 0.12;
     updateCamera();
@@ -307,6 +344,55 @@ PF.games = PF.games || {};
     pause: pause,
     resume: resume,
     stop: stop,
+    available: function () { return !!(window.THREE); }
+  };
+
+  // ---- modal adapter (T6) -------------------------------------------------
+  // On mobile the inline preview is hidden and Blocks opens in the shared game
+  // modal (init/start/stop contract). Reuses the embed play/stop; adds a retry
+  // button on game over so the round is replayable without closing the modal.
+  var modalStage = null, modalOverEl = null;
+
+  function showModalRetry() {
+    if (!modalStage) return;
+    if (modalOverEl) { modalOverEl.parentNode && modalOverEl.parentNode.removeChild(modalOverEl); }
+    modalOverEl = document.createElement('div');
+    modalOverEl.className = 'pf-blocks-modal-over';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pf-game-retry mono';
+    btn.textContent = 'Reintentar';
+    btn.addEventListener('click', function () {
+      if (modalOverEl && modalOverEl.parentNode) modalOverEl.parentNode.removeChild(modalOverEl);
+      modalOverEl = null;
+      play(modalStage, showModalRetry);
+      try { modalStage.focus({ preventScroll: true }); } catch (e) { /* no-op */ }
+    });
+    modalOverEl.appendChild(btn);
+    modalStage.appendChild(modalOverEl);
+    btn.focus();
+  }
+
+  PF.games.blocks = {
+    init: function (mountEl) {
+      mountEl.innerHTML = '';
+      modalStage = document.createElement('div');
+      modalStage.className = 'pf-blocks-modal-stage';
+      modalStage.setAttribute('tabindex', '0');
+      mountEl.appendChild(modalStage);
+      modalOverEl = null;
+    },
+    start: function () {
+      if (!modalStage) return;
+      play(modalStage, showModalRetry);
+      try { modalStage.focus({ preventScroll: true }); } catch (e) { /* no-op */ }
+    },
+    stop: function () {
+      stop();
+      if (modalOverEl && modalOverEl.parentNode) modalOverEl.parentNode.removeChild(modalOverEl);
+      modalOverEl = null;
+      modalStage = null;
+    },
     available: function () { return !!(window.THREE); }
   };
 })();

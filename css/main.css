@@ -1002,6 +1002,21 @@ button {
   .about-card {
     padding: 22px;
   }
+  /* Checkpoint 6 (T4): on phones the bio read too large / out of proportion.
+     Shrink the body + lead text (kept ≥14px for legibility). Desktop/tablet
+     >768px are untouched. */
+  .about-lead {
+    font-size: 14.5px;
+    margin-bottom: 14px;
+  }
+  .about-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .about-interests-label {
+    font-size: 11.5px;
+  }
 }
 
 /* ===== 03 TECNOLOGÍAS ===== */
@@ -2240,12 +2255,22 @@ body.pf-lb-open {
 body[data-section='section4'] .proyectos-sweep {
   animation-play-state: running;
 }
+/* Checkpoint 6 (T1): the Blocks embed shares the section's background — NO
+   panel tint / divider — so text and game read as one seamless space (like the
+   Formación section). The 3D canvas renders with alpha, so the shared bg shows
+   through around the tower. */
 .blocks-embed {
   position: relative;
   height: 100%;
   min-height: 270px;
-  background: rgba(4, 7, 10, 0.65);
-  border-left: 1px solid var(--green-glow);
+  background: transparent;
+  border: none;
+}
+
+/* Full-section background canvas (binary rain / grid) that flows behind BOTH
+   the game column and the poster/text column — the T1 "no divisions" fix. */
+.section-bg-canvas {
+  pointer-events: none;
 }
 
 /* ----- 05 FORMACIÓN: green grid + centre ripples + Diana embed ----- */
@@ -2300,11 +2325,12 @@ body[data-section='section5'] .formacion-ripple {
   grid-template-columns: minmax(300px, 460px) 1fr;
   align-items: center;
 }
-.diana-embed {
+.typer-embed {
   padding: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
 }
 .formacion-poster {
   position: relative;
@@ -2327,17 +2353,17 @@ body[data-section='section5'] .formacion-ripple {
     grid-template-rows: 1fr auto;
   }
   .blocks-embed {
-    border-left: none;
-    border-top: 1px solid var(--green-glow);
+    border: none;
+    background: transparent;
   }
-  /* Embedded games stack UNDER the text/poster on mobile (checkpoint 5 item 7).
-     Logros keeps a seamless game wrapper (no divider). */
+  /* Embedded games stack UNDER the text/poster on tablet (checkpoint 5 item 7).
+     Seamless game wrappers (no divider). */
   .logros-poster { order: 1; }
   .ttt-embed { order: 2; border: none; }
-  /* Formación: poster/text on top, Diana below. */
+  /* Formación: poster/text on top, Typer below. */
   .formacion-split { grid-template-rows: 1fr auto; }
   .formacion-poster { order: 1; }
-  .diana-embed { order: 2; }
+  .typer-embed { order: 2; }
 }
 @media (max-width: 540px) {
   .social-3d { transform: scale(0.86); transform-origin: center; }
@@ -2455,15 +2481,105 @@ html, body { max-width: 100%; }
     padding: clamp(14px, 4.5vw, 20px);
   }
   .about-lead {
-    font-size: clamp(13px, 3.6vw, 15px);
+    font-size: 14.5px;
     margin-bottom: clamp(10px, 3vw, 14px);
   }
   .about-card p {
-    font-size: clamp(12.5px, 3.4vw, 14px);
+    font-size: 14px;
     line-height: 1.55;
     margin-bottom: clamp(8px, 2.6vw, 12px);
   }
   .about-tech-label {
     margin-bottom: clamp(8px, 2.6vw, 12px);
   }
+}
+
+/* =========================================================================
+   CHECKPOINT 6 — mobile: inline socials (T5) + "Jugar" modal buttons (T6).
+   Placed last so it wins over earlier pentagon scale rules at equal
+   specificity. Desktop (>768px) is completely untouched.
+   ========================================================================= */
+
+/* ----- T5: contact socials become a small horizontal row on phones ----- */
+@media (max-width: 768px) {
+  .social-3d {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    margin: 10px auto 0;
+    padding: 0;
+    transform: none;
+  }
+  .social-3d .s3d-item {
+    position: static;
+    top: auto;
+    left: auto;
+    width: 46px;
+    height: 46px;
+    /* keep the diamond/rhombus tilt, just smaller and in a line */
+    transform: rotate(-30deg) skew(25deg) scale(0.82);
+  }
+  .contact-side {
+    min-height: 0;
+  }
+}
+
+/* ----- T6: hide inline game embeds on phones, show a bottom "Jugar" that
+   opens the shared modal. Secondary (cyan) button style, pinned low. ----- */
+.pf-mobile-play {
+  display: none;
+}
+@media (max-width: 768px) {
+  .section--logros .ttt-embed,
+  .section--proyectos .blocks-embed,
+  .section--formacion .typer-embed {
+    display: none;
+  }
+  /* the split collapses to just the poster/text column */
+  .logros-split,
+  .proyectos-split,
+  .formacion-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .pf-mobile-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    left: 50%;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: var(--z-content);
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 26px;
+    border: 1px solid var(--cyan-pure);
+    border-radius: 8px;
+    background: rgba(0, 22, 26, 0.72);
+    color: var(--cyan-bright);
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.18);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .pf-mobile-play:hover,
+  .pf-mobile-play:focus-visible {
+    background: rgba(0, 255, 255, 0.14);
+    box-shadow: 0 0 20px var(--cyan-glow);
+  }
+  .pf-mobile-play-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .pf-mobile-play { transition: none; }
 }

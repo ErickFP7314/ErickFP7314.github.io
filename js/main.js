@@ -200,16 +200,30 @@ window.PF = window.PF || {};
       blocksHost.classList.add('pf-embed-unavailable');
     }
 
-    // Diana — embedded archery on the Formación section.
-    var dianaHost = document.getElementById('dianaEmbed');
-    if (dianaHost && PF.embed && PF.games && PF.games.dianaEmbed) {
-      PF.embed.attach({
-        host: dianaHost,
-        section: document.getElementById('section5'),
-        game: PF.games.dianaEmbed,
-        name: 'Diana — puntería'
-      });
+    // Typer — mecanografía por lenguaje, embebida IN-PLACE en la Formación.
+    // Se monta directo (como TicTacToe): su propia pantalla de selección de
+    // lenguaje hace de estado "idle", sin CTA de PF.embed.
+    var typerHost = document.getElementById('typerEmbed');
+    if (typerHost && PF.games && PF.games.typing && PF.games.typing.init) {
+      // init() already renders the language picker (the "idle" state), so no
+      // separate start() call is needed for the always-on embedded instance.
+      PF.games.typing.init(typerHost, PF.state);
     }
+
+    // Mobile-only "Jugar" buttons: open the game in the shared modal (T6).
+    setupMobilePlayButtons();
+  }
+
+  // On phones the inline previews read poorly, so each game section hides its
+  // embed and shows a bottom "Jugar" button that opens the shared modal.
+  function setupMobilePlayButtons() {
+    if (!(PF.games && PF.games.open)) return;
+    document.querySelectorAll('.pf-mobile-play[data-modal-game]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-modal-game');
+        if (id) PF.games.open(id, btn);
+      });
+    });
   }
 
   // Scramble-text hover effect (checkpoint 4 Tanda B) on the Formación title:

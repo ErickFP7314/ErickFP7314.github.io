@@ -292,7 +292,10 @@ window.PF = window.PF || {};
       kindLabel: 'MEDALLA DE ORO',
       gold: true,
       description: 'Medalla de Oro a nivel nacional en el área de Informática de la Olimpiada Boliviana, resolviendo problemas algorítmicos en C++.',
-      image: null
+      image: { src: 'assets/img/medallero-2020.png', alt: 'Medallero de la Olimpiada Boliviana de Informática 2020 con la delegación premiada', w: 1600, h: 1335 },
+      link: 'https://www.facebook.com/photo/?fbid=4043497392397422',
+      linkLabel: 'Ver publicación',
+      linkIcon: 'facebook'
     },
     {
       id: 'medalla-plata-nacional-informatica-2020',

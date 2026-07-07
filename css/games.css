@@ -226,11 +226,77 @@ body.pf-modal-open {
   background: rgba(0, 255, 255, 0.12);
 }
 
-/* ===== Typing test (DOM-based, no canvas) ============================== */
+/* ===== Typer (DOM-based, no canvas): SELECT → PLAYING → STATS =========== */
 
 .pf-typing-wrap {
   width: 100%;
   max-width: 520px;
+}
+
+.pf-typing-panel {
+  width: 100%;
+}
+
+/* ----- SELECT screen (language picker) ----- */
+.pf-typing-select-title {
+  color: var(--gray-text);
+  font-size: 0.78rem;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.pf-typing-langs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pf-typing-lang-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 74px;
+  padding: 10px 6px;
+  background: rgba(17, 17, 17, 0.85);
+  border: 1px solid var(--green-glow);
+  border-radius: 6px;
+  color: var(--white);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.pf-typing-lang-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.pf-typing-lang-btn:hover,
+.pf-typing-lang-btn:focus-visible {
+  border-color: var(--brand, var(--cyan-pure));
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* ----- PLAYING screen ----- */
+.pf-typing-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.pf-typing-hud-lang {
+  color: var(--gray-text);
+}
+
+.pf-typing-hud-metrics {
+  color: var(--cyan-bright);
 }
 
 .pf-typing-box {
@@ -244,17 +310,12 @@ body.pf-modal-open {
   cursor: text;
 }
 
-.pf-typing-lang {
-  color: var(--gray-text);
-  font-size: 0.75rem;
-  margin-bottom: 10px;
-}
-
 .pf-typing-text {
   font-size: 0.92rem;
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
+  tab-size: 4;
   color: var(--gray-text);
 }
 
@@ -265,6 +326,8 @@ body.pf-modal-open {
 .pf-typing-char.wrong {
   color: var(--red-accent);
   text-decoration: underline;
+  background: rgba(255, 51, 51, 0.12);
+  border-radius: 2px;
 }
 
 .pf-typing-char.current {
@@ -275,19 +338,198 @@ body.pf-modal-open {
 
 .pf-typing-input {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   border: 0;
   padding: 0;
+  margin: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  cursor: text;
+  font-size: 16px; /* ≥16px prevents iOS auto-zoom when focused */
 }
 
-.pf-typing-mobile-note {
-  max-width: 360px;
-  padding: 24px;
-  text-align: center;
+/* ----- STATS screen ----- */
+.pf-typing-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pf-typing-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.pf-typing-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 4px;
+  background: rgba(17, 17, 17, 0.75);
+  border: 1px solid var(--green-glow);
+  border-radius: 6px;
+}
+
+.pf-typing-stat-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.pf-typing-stat-val.is-wpm { color: var(--green-bright); }
+.pf-typing-stat-val.is-acc { color: var(--cyan-bright); }
+.pf-typing-stat-val.is-err { color: var(--red-accent); }
+.pf-typing-stat-val.is-time { color: var(--yellow-accent); }
+
+.pf-typing-stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
   color: var(--gray-text);
-  font-size: 0.9rem;
+}
+
+/* ----- interactive WPM graph ----- */
+.pf-typing-graph-wrap {
+  width: 100%;
+}
+
+.pf-typing-graph-cap {
+  color: var(--gray-text);
+  font-size: 0.68rem;
+  margin: 0 0 4px;
+}
+
+.pf-typing-graph {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 6px;
+}
+
+.pf-graph-axis {
+  stroke: rgba(136, 136, 136, 0.5);
+  stroke-width: 1;
+}
+
+.pf-graph-area {
+  fill: rgba(0, 255, 0, 0.1);
+  stroke: none;
+}
+
+.pf-graph-line {
+  fill: none;
+  stroke: var(--green-bright);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.pf-graph-anim {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: pfGraphDraw 1s ease forwards;
+}
+
+@keyframes pfGraphDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.pf-graph-dot {
+  fill: var(--cyan-pure);
+  stroke: #000;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: r 0.15s ease;
+}
+
+.pf-graph-dot:hover,
+.pf-graph-dot:focus-visible,
+.pf-graph-dot.is-active {
+  fill: var(--yellow-accent);
+  outline: none;
+}
+
+.pf-graph-tip {
+  fill: var(--white);
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.pf-typing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pf-typing-change {
+  min-height: 44px;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid var(--gray-text);
+  border-radius: 4px;
+  color: var(--gray-text);
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.pf-typing-change:hover,
+.pf-typing-change:focus-visible {
+  border-color: var(--cyan-pure);
+  color: var(--cyan-bright);
+}
+
+.pf-typing-btn-icon svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+
+/* ----- Blocks modal stage (T6 mobile) ----- */
+.pf-blocks-modal-stage {
+  position: relative;
+  width: min(82vw, 360px);
+  height: min(58vh, 460px);
+  margin: 0 auto;
+  outline: none;
+  touch-action: none;
+}
+
+.pf-blocks-modal-over {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.68);
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-graph-anim {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+  .pf-typing-lang-btn,
+  .pf-typing-change,
+  .pf-graph-dot {
+    transition: none;
+  }
 }
 
 /* ===== Reduced motion (self-contained; games.css does not depend on
