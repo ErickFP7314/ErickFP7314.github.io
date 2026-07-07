@@ -1,0 +1,64 @@
+{
+  "_doc": "Config de EJEMPLO del harness. Los valores son EXACTAMENTE los del sitio actual (baseline). Un agente NO edita este archivo: lo copia a 'portfolio.config.json' y modifica esa copia. 'portfolio.config.json' es la UNICA interfaz de theming y esta en .gitignore (pertenece al usuario final, no a la plantilla).",
+
+  "meta": {
+    "_doc": "Identidad basica del sitio. name -> hero (js/content.js contact.name); title/description -> <title>/<meta description> de los HTML; language -> atributo lang de <html>.",
+    "name": "Erick Luis Flores Paz",
+    "title": "Erick Luis Flores Paz — Portfolio",
+    "description": "Portfolio terminal-hacker de Erick Luis Flores Paz: perfil, tecnologias, logros, proyectos y formacion.",
+    "language": "es"
+  },
+
+  "theme": {
+    "_doc": "Paleta. apply-theme.mjs escribe estos valores en los tokens CSS del bloque :root de css/main.css. De 'primary' deriva --green-pure/bright/mid/soft/glow y de 'secondary' las --cyan-*; las variantes bright/mid/soft se calculan por mezcla con blanco a proporciones FIJAS en decimas (primary: 4/5/6, secondary: 3/5/7) y glow = rgba del color a 0.3. IMPORTANTE: los tokens conservan sus NOMBRES (--green-*, --cyan-*) aunque el color cambie; son roles (primario/secundario), no colores literales.",
+    "bg": {
+      "_doc": "Fondos. primary = fondo global; secondary = paneles/tarjetas; terminal = fondo de bloques tipo terminal.",
+      "primary": "#0a0a0a",
+      "secondary": "#222222",
+      "terminal": "#111111"
+    },
+    "primary": "#00ff00",
+    "secondary": "#00ffff",
+    "accents": {
+      "_doc": "danger -> token --red-accent (errores/alertas); highlight -> token --yellow-accent (destacados como la medalla de oro).",
+      "danger": "#ff3333",
+      "highlight": "#ffd700"
+    },
+    "text": {
+      "_doc": "white -> --white (texto principal); muted -> --gray-text (texto secundario); dim -> --gray-dim (bordes/lineas tenues). Manten contraste >= 4.5:1 sobre bg.primary.",
+      "white": "#ffffff",
+      "muted": "#888888",
+      "dim": "#444444"
+    },
+    "fonts": {
+      "_doc": "mono = fuente monoespaciada (clase .mono y bloques terminal); sans = fuente de texto general. Si cambian, apply-theme actualiza las font-family de css/main.css y el <link> de Google Fonts de los HTML, y avisa que debes verificar que la fuente exista en Google Fonts. El cambio de fuente es relativo a estos nombres baseline.",
+      "mono": "Fira Code",
+      "sans": "Inter"
+    }
+  },
+
+  "sections": [
+    { "_doc": "Las 6 secciones full-screen del index.html. 'id' es estable y mapea a #section1..#section6 y a las claves de PF.data (ver CONTENT-MAP.md). 'enabled:false' => quitar la seccion siguiendo la receta quirurgica de CONTENT-MAP (bloque <section>, entrada de menu y wiring). 'title' es el texto visible del menu/encabezado." },
+    { "id": "home",      "enabled": true, "title": "HOME" },
+    { "id": "about",     "enabled": true, "title": "SOBRE MÍ" },
+    { "id": "logros",    "enabled": true, "title": "LOGROS" },
+    { "id": "proyectos", "enabled": true, "title": "PROYECTOS" },
+    { "id": "formacion", "enabled": true, "title": "FORMACIÓN" },
+    { "id": "contacto",  "enabled": true, "title": "CONTACTO" }
+  ],
+
+  "games": {
+    "_doc": "Juegos jugables. tictactoe/blocks3d/typing van embebidos en el index (secciones 03/04/05, modal en movil <=768px); snake/diana/pong viven en las slides finales de las subpaginas. 'false' => quitar siguiendo la receta 'quitar un juego' de CONTENT-MAP. NO edites js/games/* a mano.",
+    "tictactoe": true,
+    "blocks3d": true,
+    "typing": true,
+    "snake": true,
+    "diana": true,
+    "pong": true
+  },
+
+  "deploy": {
+    "_doc": "Destino de publicacion. 'github-pages' es el flujo por defecto (raiz del repo + .nojekyll). Otros valores son informativos para el agente.",
+    "target": "github-pages"
+  }
+}
