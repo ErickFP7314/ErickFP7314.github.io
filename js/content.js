@@ -328,16 +328,6 @@ window.PF = window.PF || {};
       image: { src: 'assets/img/certs/segundo-lugar-icpc-nacional-2022.png', alt: 'Certificado de Segundo Lugar en el Concurso Nacional de Programación ICPC 2022', w: 850, h: 601 }
     },
     {
-      id: 'mencion-honor-fisica-2023',
-      title: 'Mención de Honor — Física (Etapa Departamental)',
-      issuer: 'Dirección Departamental de Educación Potosí',
-      date: 'ene 2023',
-      dateISO: '2023-01-15',
-      kindLabel: 'PREMIO',
-      description: 'Mención de Honor en la etapa departamental de la 11ª Olimpiada Científica Estudiantil Plurinacional Boliviana, área de Física — Quinto de Secundaria.',
-      image: { src: 'assets/img/certs/mencion-honor-fisica-2023.png', alt: 'Certificado de Mención de Honor en Física, Olimpiada 2023', w: 850, h: 601 }
-    },
-    {
       id: 'primer-lugar-intercolegial-uatf-2023',
       title: 'Primer Lugar — Competencia de Programación Intercolegial (Nivel 3)',
       issuer: 'UATF · Ingeniería Informática',
@@ -366,16 +356,6 @@ window.PF = window.PF || {};
       kindLabel: 'RECONOCIMIENTO',
       description: 'Certificado de reconocimiento por el Primer Lugar en el área de Informática Nivel 3 de la Tercera Etapa Departamental de la 12ª Olimpiada Científica Estudiantil Plurinacional Boliviana.',
       image: { src: 'assets/img/certs/reconocimiento-1er-lugar-ddepotosi-2023.png', alt: 'Certificado de Reconocimiento por Primer Lugar en Informática Nivel 3, 12ª OCEPB 2023', w: 850, h: 601 }
-    },
-    {
-      id: 'hijo-distinguido-potosi-2023',
-      title: 'Título Honorífico "Hijo Distinguido — Orgullo Potosino"',
-      issuer: 'Gobierno Autónomo Municipal de Potosí',
-      date: '22 nov 2023',
-      dateISO: '2023-11-22',
-      kindLabel: 'DISTINCIÓN',
-      description: 'Título honorífico de "Hijo Distinguido" en el grado "Orgullo Potosino" otorgado por Ordenanza Municipal Nº 071/2023 por su destacada capacidad científica y tecnológica.',
-      image: { src: 'assets/img/certs/hijo-distinguido-potosi-2023.png', alt: 'Ordenanza Municipal que otorga el título Hijo Distinguido - Orgullo Potosino, 2023', w: 601, h: 850 }
     },
     {
       id: 'decreto-reconocimiento-potosi-2023',

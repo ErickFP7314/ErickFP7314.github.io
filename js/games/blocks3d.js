@@ -46,7 +46,22 @@ PF.games = PF.games || {};
   }
 
   function ensure() {
-    if (renderer) return;
+    if (renderer) {
+      // T4 root cause fix: the module-level renderer/canvas/scoreEl are SHARED
+      // between the desktop inline embed (Proyectos section) and the mobile game
+      // modal. ensure() can be called with a DIFFERENT stageEl than the one the
+      // canvas is currently parented to. On phones the embed is display:none but
+      // setupEmbeddedGames() still calls preview(), so the renderer gets created
+      // and its canvas is appended to the hidden embed host. When the modal then
+      // reused this renderer, its canvas stayed in the hidden host and the modal
+      // showed an EMPTY stage (the game "didn't work"). Re-attach the canvas +
+      // score chip to whichever stage is currently active.
+      if (stageEl && renderer.domElement.parentNode !== stageEl) {
+        stageEl.appendChild(renderer.domElement);
+        if (scoreEl) stageEl.appendChild(scoreEl);
+      }
+      return;
+    }
     if (!THREE) THREE = window.THREE;
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -386,6 +401,10 @@ PF.games = PF.games || {};
       if (!modalStage) return;
       play(modalStage, showModalRetry);
       try { modalStage.focus({ preventScroll: true }); } catch (e) { /* no-op */ }
+      // T4 safety: re-measure once the modal has painted. If the synchronous
+      // play() ran before the stage had a layout box, the renderer would size to
+      // 0x0 and the tower would be invisible; a deferred resize corrects it.
+      requestAnimationFrame(function () { if (renderer) resize(); });
     },
     stop: function () {
       stop();

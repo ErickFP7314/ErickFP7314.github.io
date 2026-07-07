@@ -94,6 +94,11 @@ PF.games = PF.games || {};
 
   function showOverlay() {
     if (!overlay) return;
+    // Batch 7 (T5): clear the transient "last result" text and repaint one clean
+    // frame so the floating canvas text can't sit behind / overlap the game-over
+    // card on short mobile canvases.
+    lastResult = null;
+    if (ctx) draw();
     overlay.innerHTML =
       '<div class="pf-game-over mono">' +
       '<p>Ronda terminada — Nivel ' + level + '</p>' +
@@ -596,13 +601,22 @@ PF.games = PF.games || {};
     ctx.font = '14px "Fira Code", monospace';
     ctx.textAlign = 'left';
     ctx.fillText('FLECHAS: ' + Math.max(0, arrowsLeft) + '  PUNTAJE: ' + total, 12, 22);
-    if (lastResult && !flying) {
+    // Show the floating shot result ONLY during play — at game over it would
+    // collide with the centered summary on a short canvas (Batch 7 T5).
+    if (lastResult && !flying && running) {
       ctx.fillStyle = '#ffd700'; ctx.font = '18px "Fira Code", monospace';
       ctx.textAlign = 'center'; ctx.fillText(lastResult, W / 2, 44); ctx.textAlign = 'left';
     }
     if (!running && arrowsLeft <= 0) {
-      ctx.fillStyle = '#ffd700'; ctx.font = '600 22px "Fira Code", monospace';
-      ctx.textAlign = 'center'; ctx.fillText('Puntaje: ' + total, W / 2, H / 2 - 84); ctx.textAlign = 'left';
+      // Game-over summary: dark band + centered score, positioned/ sized
+      // proportionally to the canvas so it never overlaps the top HUD (T5).
+      ctx.fillStyle = 'rgba(6, 8, 6, 0.82)';
+      ctx.fillRect(0, H / 2 - 30, W, 60);
+      ctx.fillStyle = '#ffd700';
+      ctx.font = '600 ' + Math.round(Math.max(16, H * 0.06)) + 'px "Fira Code", monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Puntaje: ' + total, W / 2, H / 2);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     }
   }
 

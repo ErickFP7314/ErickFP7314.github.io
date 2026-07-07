@@ -189,24 +189,43 @@ body.pf-modal-open {
 }
 
 .pf-game-overlay.visible {
-  background: rgba(0, 0, 0, 0.82);
+  background: rgba(0, 0, 0, 0.9);
   opacity: 1;
   pointer-events: auto;
 }
 
+/* Batch 7 (T5): game-over panel. A solid, self-contained card guarantees that
+   any residual canvas text drawn behind it (HUD score, last result) can NEVER
+   bleed through or overlap the game-over text. Vertical rhythm comes from a
+   flex column + gap so the title / score / button stay proportionally spaced on
+   the smallest mobile canvas — no fixed coordinates that collide. */
 .pf-game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   text-align: center;
   color: var(--white);
-  padding: 12px;
+  padding: 16px 22px;
+  max-width: 88%;
+  background: rgba(6, 8, 6, 0.94);
+  border: 1px solid var(--green-glow);
+  border-radius: 10px;
 }
 
 .pf-game-over p {
-  margin: 4px 0;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.pf-game-over p:first-child {
+  font-size: 1.12rem;
+  font-weight: 600;
 }
 
 .pf-game-score {
   color: var(--yellow-accent);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
 }
 
 .pf-game-retry {

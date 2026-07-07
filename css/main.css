@@ -975,7 +975,7 @@ button {
 }
 
 .about-lead {
-  color: var(--cyan-bright);
+  color: var(--white);
   font-size: 16px;
   margin: 0 0 18px;
 }
@@ -1006,7 +1006,7 @@ button {
      Shrink the body + lead text (kept ≥14px for legibility). Desktop/tablet
      >768px are untouched. */
   .about-lead {
-    font-size: 14.5px;
+    font-size: 13px;
     margin-bottom: 14px;
   }
   .about-card p {
@@ -1830,6 +1830,9 @@ button {
 .pf-lb-img {
   max-width: 92vw;
   max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   border-radius: 10px;
   border: 1px solid var(--green-glow);
   box-shadow: 0 0 40px rgba(0, 255, 0, 0.18);
@@ -2481,7 +2484,7 @@ html, body { max-width: 100%; }
     padding: clamp(14px, 4.5vw, 20px);
   }
   .about-lead {
-    font-size: 14.5px;
+    font-size: 12px;
     margin-bottom: clamp(10px, 3vw, 14px);
   }
   .about-card p {

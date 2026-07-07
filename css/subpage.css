@@ -418,8 +418,61 @@ body[data-page] .scroll-container {
     gap: 22px;
   }
 
+  /* Batch 7 (T3): certificate images (decreto departamental, reconocimientos,
+     etc.) are physically huge — tall portraits (601x850) or wide scans — and
+     even capped they dominated the phone viewport. On mobile we now show them
+     PARTIALLY inside a fixed crop frame (object-fit:cover, anchored to the top
+     so the title/header reads), with a bottom fade + an expand hint signalling
+     "there's more — tap to open". Tapping still opens the lightbox, which shows
+     the COMPLETE image (contain) on any device. Applies to every cert-frame so
+     the logros timeline reads as a uniform, elegant stack of cards. */
+  .cert-frame {
+    position: relative;
+    max-height: 34vh;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
   .cert-frame img {
-    max-height: 48vh;
+    width: 100%;
+    height: 34vh;
+    max-height: 34vh;
+    object-fit: cover;
+    object-position: top center;
+    padding: 0;
+    border-radius: 10px;
+  }
+
+  /* Bottom fade — visual cue that the image continues past the crop. */
+  .cert-frame::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 46px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.72) 100%);
+    border-radius: 0 0 10px 10px;
+  }
+
+  /* Expand badge (bottom-right) — "tap to see the full certificate". */
+  .cert-frame::before {
+    content: '';
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+    border-radius: 6px;
+    background-color: rgba(10, 10, 10, 0.72);
+    border: 1px solid var(--cyan-pure, #00ffff);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300ffff'%3E%3Cpath d='M4 4h6v2H6v4H4V4Zm10 0h6v6h-2V6h-4V4ZM4 14h2v4h4v2H4v-6Zm16 0v6h-6v-2h4v-4h2Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
   }
 
   /* Hotfix: gallery screenshots (Tetris, Tic-Tac-Toe, Billetes) mix portrait
