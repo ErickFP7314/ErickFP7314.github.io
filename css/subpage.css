@@ -421,6 +421,16 @@ body[data-page] .scroll-container {
   .cert-frame img {
     max-height: 48vh;
   }
+
+  /* Hotfix: gallery screenshots (Tetris, Tic-Tac-Toe, Billetes) mix portrait
+     and landscape shots — at full card width a tall portrait shot can grow
+     past the 100dvh section and spill over. object-fit:contain keeps each
+     image at its true intrinsic proportion (never stretched/cropped) while
+     max-height bounds it so the stacked pair fits comfortably. */
+  .item-media:not(.cert-frame) img {
+    max-height: 32vh;
+    object-fit: contain;
+  }
 }
 
 /* =========================================================================

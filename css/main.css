@@ -2433,3 +2433,37 @@ html, body { max-width: 100%; }
   .contact-grid { gap: 36px; }
   .about-columns { gap: 28px; }
 }
+
+/* ----- "Sobre mí" hotfix: on small phones (320/375/414) the bio card +
+   interest tags + honeycomb previously used fixed paddings/font-sizes that
+   left little breathing room inside the fixed 100dvh section (overflow is
+   hidden there, so cramped content risks clipping). clamp() lets everything
+   scale smoothly with viewport width without touching tablet/desktop. ----- */
+@media (max-width: 480px) {
+  .section--about {
+    padding-top: clamp(28px, 8vw, 40px);
+    padding-bottom: clamp(28px, 8vw, 40px);
+  }
+  .about-merged .section-heading {
+    margin-bottom: clamp(14px, 4vw, 22px);
+    font-size: clamp(20px, 6vw, 26px);
+  }
+  .about-columns {
+    gap: clamp(14px, 4vw, 20px);
+  }
+  .about-card {
+    padding: clamp(14px, 4.5vw, 20px);
+  }
+  .about-lead {
+    font-size: clamp(13px, 3.6vw, 15px);
+    margin-bottom: clamp(10px, 3vw, 14px);
+  }
+  .about-card p {
+    font-size: clamp(12.5px, 3.4vw, 14px);
+    line-height: 1.55;
+    margin-bottom: clamp(8px, 2.6vw, 12px);
+  }
+  .about-tech-label {
+    margin-bottom: clamp(8px, 2.6vw, 12px);
+  }
+}
