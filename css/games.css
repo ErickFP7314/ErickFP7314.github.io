@@ -1,0 +1,322 @@
+/* =========================================================================
+   games.css — modal, canvas, HUD, typing-test UI styles (Batch 4).
+   Owned exclusively by the games sub-system (js/games/**). Reuses the
+   palette tokens + z-index scale declared in css/main.css :root.
+   ========================================================================= */
+
+/* ===== Modal overlay + box (design.md: game-modal lifecycle contract) === */
+
+.pf-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+.pf-modal-box {
+  width: 100%;
+  max-width: 540px;
+  background: rgba(17, 17, 17, 0.97);
+  border: 1px solid var(--green-glow);
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.18);
+  overflow: hidden;
+}
+
+.pf-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--green-glow);
+}
+
+.pf-modal-title {
+  color: var(--green-bright);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.pf-modal-close {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--red-accent);
+  border-radius: 4px;
+  color: var(--red-accent);
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pf-modal-close:hover {
+  background: rgba(255, 51, 51, 0.12);
+  box-shadow: 0 0 10px rgba(255, 51, 51, 0.35);
+}
+
+.pf-modal-mount {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.pf-modal-hint {
+  padding: 8px 14px 14px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--gray-text);
+  border-top: 1px solid rgba(0, 255, 0, 0.12);
+}
+
+/* Suspend the scroll-snap page container + page scroll while a modal is
+   open (design.md: "lock body, snap off"). */
+.pf-scroll-locked {
+  overflow: hidden !important;
+  scroll-snap-type: none !important;
+}
+
+body.pf-modal-open {
+  overflow: hidden;
+}
+
+/* ===== "¿Jugar? 🎮" trigger badge (runtime-injected, never in HTML) ===== */
+
+.pf-play-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 10px 16px;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--green-glow);
+  background: rgba(0, 255, 0, 0.08);
+  color: var(--green-bright);
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.pf-play-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.pf-play-badge:hover,
+.pf-play-badge:focus-visible {
+  opacity: 1;
+}
+
+.pf-play-badge.pf-play-armed {
+  opacity: 1;
+  box-shadow: 0 0 16px var(--green-glow);
+  animation: pfBadgeBounceIn 0.45s ease, pfBadgeBlink 1.4s ease-in-out 0.45s infinite;
+}
+
+/* Touch/no-hover devices: badge is always fully visible (no hover delay). */
+@media (hover: none) {
+  .pf-play-badge {
+    opacity: 1;
+  }
+}
+
+@keyframes pfBadgeBounceIn {
+  0% { transform: scale(0.85); }
+  55% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pfBadgeBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ===== Shared game chrome (HUD, canvas, overlay) ======================= */
+
+.pf-game-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.pf-game-hud {
+  color: var(--cyan-bright);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.pf-canvas-wrap {
+  position: relative;
+  line-height: 0;
+}
+
+.pf-game-canvas {
+  display: block;
+  background: #000;
+  border: 1px solid var(--green-glow);
+  border-radius: 4px;
+  max-width: 100%;
+  height: auto;
+  touch-action: none;
+}
+
+.pf-game-canvas--tall {
+  max-height: 60vh;
+}
+
+.pf-game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.pf-game-overlay.visible {
+  background: rgba(0, 0, 0, 0.82);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pf-game-over {
+  text-align: center;
+  color: var(--white);
+  padding: 12px;
+}
+
+.pf-game-over p {
+  margin: 4px 0;
+}
+
+.pf-game-score {
+  color: var(--yellow-accent);
+  font-size: 1.1rem;
+}
+
+.pf-game-retry {
+  margin-top: 10px;
+  min-height: 44px;
+  padding: 8px 22px;
+  background: transparent;
+  border: 1px solid var(--cyan-pure);
+  border-radius: 4px;
+  color: var(--cyan-bright);
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  transition: background 0.2s ease;
+}
+
+.pf-game-retry:hover {
+  background: rgba(0, 255, 255, 0.12);
+}
+
+/* ===== Typing test (DOM-based, no canvas) ============================== */
+
+.pf-typing-wrap {
+  width: 100%;
+  max-width: 520px;
+}
+
+.pf-typing-box {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  background: #000;
+  border: 1px solid var(--green-glow);
+  border-radius: 4px;
+  padding: 18px;
+  cursor: text;
+}
+
+.pf-typing-lang {
+  color: var(--gray-text);
+  font-size: 0.75rem;
+  margin-bottom: 10px;
+}
+
+.pf-typing-text {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--gray-text);
+}
+
+.pf-typing-char.correct {
+  color: var(--green-bright);
+}
+
+.pf-typing-char.wrong {
+  color: var(--red-accent);
+  text-decoration: underline;
+}
+
+.pf-typing-char.current {
+  background: var(--cyan-glow);
+  color: var(--white);
+  border-radius: 2px;
+}
+
+.pf-typing-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+}
+
+.pf-typing-mobile-note {
+  max-width: 360px;
+  padding: 24px;
+  text-align: center;
+  color: var(--gray-text);
+  font-size: 0.9rem;
+}
+
+/* ===== Reduced motion (self-contained; games.css does not depend on
+   animations.css, which is owned by the effects batch) =================== */
+@media (prefers-reduced-motion: reduce) {
+  .pf-play-badge.pf-play-armed {
+    animation: none;
+    box-shadow: 0 0 10px var(--green-glow);
+  }
+
+  .pf-game-overlay,
+  .pf-play-badge,
+  .pf-modal-close,
+  .pf-game-retry {
+    transition: none;
+  }
+}
+
+/* ===== Mobile tweaks ==================================================== */
+@media (max-width: 480px) {
+  .pf-modal-box {
+    max-width: 100%;
+  }
+
+  .pf-modal-mount {
+    padding: 10px;
+  }
+
+  .pf-game-hud {
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Proyectos — Erick Luis Flores Paz</title>
+  <meta name="description" content="Proyectos personales de Erick Luis Flores Paz: Tetris, Tic-Tac-Toe, verificador de billetes y EcoAlerta Bolivia." />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/subpage.css" />
+  <link rel="stylesheet" href="css/games.css" />
+</head>
+<body data-page="proyectos">
+  <noscript>
+    <p style="padding:24px;font-family:monospace;color:#0f0;background:#0a0a0a;">
+      Este sitio necesita JavaScript habilitado para mostrar el contenido.
+    </p>
+  </noscript>
+
+  <div id="loading-screen">
+    <div class="loader-blocks" aria-hidden="true">
+      <div class="blocks" style="--i:1;"></div><div class="blocks" style="--i:2;"></div>
+      <div class="blocks" style="--i:3;"></div><div class="blocks" style="--i:4;"></div>
+      <div class="blocks" style="--i:5;"></div><div class="blocks" style="--i:6;"></div>
+      <div class="blocks" style="--i:7;"></div><div class="blocks" style="--i:8;"></div>
+      <div class="blocks" style="--i:9;"></div><div class="blocks" style="--i:10;"></div>
+      <div class="blocks" style="--i:11;"></div><div class="blocks" style="--i:12;"></div>
+    </div>
+  </div>
+
+  <header class="sub-header">
+    <a class="back-link mono" href="index.html#section4">← Volver</a>
+    <p class="sub-title mono">PROYECTO<span class="accent">S</span></p>
+  </header>
+
+  <div class="timeline-rail" aria-hidden="true">
+    <div class="timeline-rail-fill"></div>
+  </div>
+
+  <main class="scroll-container" id="scrollContainer"></main>
+
+  <script src="js/content.js" defer></script>
+  <script src="js/effects.js" defer></script>
+  <script src="js/subpage-effects.js" defer></script>
+  <script src="js/subpage.js" defer></script>
+  <script src="js/games/snake.js" defer></script>
+  <script src="js/games/pong.js" defer></script>
+  <script src="js/games/typing.js" defer></script>
+  <script src="js/games/modal.js" defer></script>
+  <script src="js/lightbox.js" defer></script>
+</body>
+</html>

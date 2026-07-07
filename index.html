@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Erick Luis Flores Paz — Portfolio</title>
+  <meta name="description" content="Portfolio terminal-hacker de Erick Luis Flores Paz: perfil, tecnologías, experiencia, proyectos personales y formación." />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/games.css" />
+</head>
+<body>
+  <noscript>
+    <p style="padding: 24px; font-family: monospace; color: #0f0; background: #0a0a0a;">
+      Este sitio necesita JavaScript habilitado para mostrar el contenido interactivo.
+    </p>
+  </noscript>
+
+  <!-- Loading screen: removed by js/main.js once the boot sequence finishes -->
+  <div id="loading-screen">
+    <div class="loader-blocks" aria-hidden="true">
+      <div class="blocks" style="--i:1;"></div><div class="blocks" style="--i:2;"></div>
+      <div class="blocks" style="--i:3;"></div><div class="blocks" style="--i:4;"></div>
+      <div class="blocks" style="--i:5;"></div><div class="blocks" style="--i:6;"></div>
+      <div class="blocks" style="--i:7;"></div><div class="blocks" style="--i:8;"></div>
+      <div class="blocks" style="--i:9;"></div><div class="blocks" style="--i:10;"></div>
+      <div class="blocks" style="--i:11;"></div><div class="blocks" style="--i:12;"></div>
+    </div>
+    <div id="loadingLines" class="mono" aria-hidden="true"></div>
+  </div>
+
+  <!-- Scroll progress bar (0% section 01 -> 100% section 07) -->
+  <div class="progress-bar-container" aria-hidden="true">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+
+  <!-- Hamburger + overlay menu -->
+  <button
+    class="hamburger"
+    id="hamburgerBtn"
+    type="button"
+    aria-label="Abrir menú"
+    aria-expanded="false"
+    aria-controls="menuOverlay"
+  >
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true" aria-label="Navegación principal">
+    <button class="menu-close" id="menuCloseBtn" type="button" aria-label="Cerrar menú">✕</button>
+    <ul>
+      <li><a class="mono" href="#section1" data-target="section1">HOME</a></li>
+      <li><a class="mono" href="#section2" data-target="section2">SOBRE MÍ</a></li>
+      <li><a class="mono" href="#section3" data-target="section3">LOGROS</a></li>
+      <li><a class="mono" href="#section4" data-target="section4">PROYECTOS</a></li>
+      <li><a class="mono" href="#section5" data-target="section5">FORMACIÓN</a></li>
+      <li><a class="mono" href="#section6" data-target="section6">CONTACTO</a></li>
+    </ul>
+  </nav>
+
+  <div class="section-number mono" id="sectionNumber" aria-hidden="true">01</div>
+  <div class="scroll-down" id="scrollDown" aria-hidden="true">
+    <span>SCROLL DOWN</span>
+    <div class="s-line"></div>
+  </div>
+
+  <main class="scroll-container" id="scrollContainer">
+    <!-- 01 HOME -->
+    <section class="section" id="section1" data-index="0" aria-label="Inicio">
+      <canvas id="particlesCanvas" aria-hidden="true"></canvas>
+      <div class="ascii-deco" id="asciiDecoHero" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="hero-photo-col">
+          <img class="profile-photo" src="assets/img/perfil.png" width="720" height="1280"
+               alt="Retrato de Erick Luis Flores Paz" />
+          <a class="cv-button mono" href="assets/curriculum.pdf" target="_blank" rel="noopener"
+             aria-label="Abrir currículum en PDF (se abre en una pestaña nueva)">
+            <span class="cv-icon" aria-hidden="true"></span>
+            <span>$ ver_cv</span>
+          </a>
+        </div>
+        <div class="hero-text-col">
+          <h1 class="hero-name mono" id="heroName"></h1>
+          <p class="hero-subtitle mono">Estudiante de Ingeniería de Software · Entusiasta de algoritmos e IA</p>
+          <p class="location-badge mono">
+            <span class="loc-icon" aria-hidden="true"></span>
+            <span>Cochabamba, Bolivia</span>
+          </p>
+          <div class="hero-links" data-render="hero-links"></div>
+          <div class="hero-terminal mono" aria-hidden="true">
+            <div class="t-line"><span class="prompt">$</span> whoami</div>
+            <div class="t-line">&gt; erick_luis_flores_paz</div>
+            <div class="t-line"><span class="prompt">$</span> cat skills.txt</div>
+            <div class="t-line">&gt; C++, Flutter, Python, Web, IA</div>
+            <div class="t-line"><span class="prompt">$</span> ./portfolio --interactive</div>
+            <div class="t-line">&gt; Cargando secciones... ██████████ 100%</div>
+            <div class="t-line"><span class="blink-cur"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 SOBRE MÍ (bio + tecnologías unificadas) -->
+    <section class="section section--about" id="section2" data-index="1" aria-label="Sobre mí">
+      <div class="bg-infinite-text" data-bg="infinite-text" aria-hidden="true"></div>
+      <div class="about-merged">
+        <h2 class="section-heading mono">SOBRE <span class="accent">MÍ</span></h2>
+        <div class="about-columns">
+          <div class="about-col-bio">
+            <div class="about-body" data-render="about"></div>
+          </div>
+          <div class="about-col-tech">
+            <p class="about-tech-label mono">// tecnologías</p>
+            <div class="tech-hex" data-render="technologies"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 LOGROS (poster izquierda + Tres en Raya embebido a la derecha) -->
+    <section class="section section--poster section--logros" id="section3" data-index="2" aria-label="Logros">
+      <div class="logros-split">
+        <div class="ttt-embed">
+          <p class="ttt-embed-label mono">// tres en raya · tú vs CPU</p>
+          <div id="ticTacToe" data-render="tictactoe"></div>
+        </div>
+        <a class="poster-link logros-poster" href="logros.html" aria-label="Entrar a la sección Logros">
+          <canvas class="poster-canvas" data-poster="logros" aria-hidden="true"></canvas>
+          <div class="poster-overlay">
+            <span class="poster-kicker mono">03 · LOGROS</span>
+            <span class="poster-title mono">Logros</span>
+            <span class="poster-sub mono">Medalla de Oro nacional · Premios · Reconocimientos</span>
+            <span class="poster-enter mono">INGRESAR →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 04 PROYECTOS (poster izquierda + Blocks 3D jugable in-place a la derecha) -->
+    <section class="section section--poster section--proyectos" id="section4" data-index="3" aria-label="Proyectos">
+      <div class="proyectos-sweep" aria-hidden="true"></div>
+      <div class="proyectos-split">
+        <a class="poster-link proyectos-poster" href="proyectos.html" aria-label="Entrar a la sección Proyectos">
+          <canvas class="poster-canvas" data-poster="proyectos" aria-hidden="true"></canvas>
+          <div class="poster-overlay">
+            <span class="poster-kicker mono">04 · PROYECTOS</span>
+            <span class="poster-title mono">Proyectos</span>
+            <span class="poster-sub mono">Tetris · Tic-Tac-Toe · Billetes · EcoAlerta</span>
+            <span class="poster-enter mono">INGRESAR →</span>
+          </div>
+        </a>
+        <div class="blocks-embed" id="blocksEmbed" data-embed="blocks"></div>
+      </div>
+    </section>
+
+    <!-- 05 FORMACIÓN (Diana embebida a la izquierda + poster/texto a la derecha) -->
+    <section class="section section--poster section--formacion" id="section5" data-index="4" aria-label="Formación">
+      <div class="formacion-bg" aria-hidden="true">
+        <span class="formacion-ripple"></span>
+        <span class="formacion-ripple"></span>
+        <span class="formacion-ripple"></span>
+      </div>
+      <div class="formacion-split">
+        <div class="diana-embed" id="dianaEmbed" data-embed="diana"></div>
+        <a class="poster-link formacion-poster" href="formacion.html" aria-label="Entrar a la sección Formación">
+          <div class="poster-overlay">
+            <span class="poster-kicker mono">05 · FORMACIÓN</span>
+            <span class="poster-title mono scramble" data-scramble="Formación">Formación</span>
+            <span class="poster-sub mono">Certificados · Cursos · Campamentos ICPC</span>
+            <span class="poster-enter mono">INGRESAR →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 06 CONTACTO -->
+    <section class="section section--contact" id="section6" data-index="5" aria-label="Contacto">
+      <canvas class="green-lights-canvas" data-bg="green-lights" aria-hidden="true"></canvas>
+      <h2 class="section-heading mono">CONTACTO</h2>
+      <div class="contact-grid">
+        <form class="terminal-form" id="contactForm" novalidate>
+          <div class="cmd-line">$ send-message --to=erick</div>
+
+          <div class="form-field">
+            <label class="mono" for="cf-name">nombre:</label>
+            <input class="mono" id="cf-name" name="name" type="text" required autocomplete="name" placeholder="tu_nombre" />
+          </div>
+
+          <div class="form-field">
+            <label class="mono" for="cf-email">email:</label>
+            <input class="mono" id="cf-email" name="email" type="email" required autocomplete="email" placeholder="tu@email.com" />
+          </div>
+
+          <div class="form-field">
+            <label class="mono" for="cf-msg">mensaje:</label>
+            <textarea class="mono" id="cf-msg" name="message" rows="3" required placeholder="Escribe tu mensaje..."></textarea>
+          </div>
+
+          <button type="submit" class="send-btn mono">enviar_mensaje →</button>
+        </form>
+
+        <div class="contact-side">
+          <p class="contact-info mono">Cochabamba, Bolivia · +591 63710729</p>
+          <ul class="social-3d" data-render="socials-3d" aria-label="Contacto y redes de Erick"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts: classic defer, single window.PF namespace (D1) -->
+  <script src="js/content.js" defer></script>
+  <script src="js/particles.js" defer></script>
+  <script src="js/posters.js" defer></script>
+  <script src="js/backgrounds.js" defer></script>
+  <script src="js/effects.js" defer></script>
+  <script src="js/konami.js" defer></script>
+  <!-- Vendored three.js (r128, LOCAL — no CDN at runtime) for the Blocks 3D game -->
+  <script src="assets/vendor/three.min.js" defer></script>
+  <script src="js/games/embed.js" defer></script>
+  <script src="js/games/tictactoe.js" defer></script>
+  <script src="js/games/blocks3d.js" defer></script>
+  <script src="js/games/diana.js" defer></script>
+  <script src="js/lightbox.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

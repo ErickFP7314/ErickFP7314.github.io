@@ -1,0 +1,2435 @@
+/* =========================================================================
+   main.css — tokens, layout-shell, chrome, sections, cards, forms
+   (D3, design.md): animations.css holds keyframes + reduced-motion overrides.
+   games.css holds modal/canvas/HUD styles (Batch 4).
+   ========================================================================= */
+
+:root {
+  /* ---- mandatory palette tokens ---- */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #222222;
+  --bg-terminal: #111111;
+
+  --green-pure: #00ff00;
+  --green-bright: #66ff66;
+  --green-mid: #80ff80;
+  --green-soft: #99ff99;
+  --green-glow: rgba(0, 255, 0, 0.3);
+
+  --cyan-pure: #00ffff;
+  --cyan-bright: #4dffff;
+  --cyan-mid: #80ffff;
+  --cyan-soft: #b3ffff;
+  --cyan-glow: rgba(0, 255, 255, 0.3);
+
+  --red-accent: #ff3333;
+  --yellow-accent: #ffd700;
+  --white: #ffffff;
+  --gray-text: #888888;
+  --gray-dim: #444444;
+
+  /* ---- z-index scale (design.md) ---- */
+  --z-bg: 1;
+  --z-content: 10;
+  --z-chrome: 400;
+  --z-scanline: 590;
+  --z-menu: 600;
+  --z-modal: 9000;
+  --z-cursor: 10000;
+}
+
+/* ===== Reset / base ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--white);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  height: 100%;
+  overflow-x: hidden;
+  /* Themed scrollbar (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--green-pure) rgba(17, 17, 17, 0.6);
+}
+
+/* ===== Custom themed scrollbar (WebKit/Blink) ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(17, 17, 17, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--green-pure), var(--cyan-pure));
+  border-radius: 20px;
+  border: 2px solid rgba(10, 10, 10, 0.9);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--cyan-pure), var(--green-pure));
+}
+
+.mono {
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+canvas {
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ===== Focus visibility (global, mandatory) ===== */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cyan-pure);
+  outline-offset: 2px;
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+/* ===== Utility recipes ===== */
+.glow {
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+.glass {
+  background: rgba(34, 34, 34, 0.35);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 0, 0.25);
+}
+
+.terminal-box {
+  background: rgba(17, 17, 17, 0.6);
+  border: 1px solid var(--green-glow);
+}
+
+/* ===== Loading screen ===== */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  z-index: var(--z-cursor);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fira Code', monospace;
+  color: var(--green-pure);
+  transition: opacity 0.6s ease, visibility 0.6s;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#loadingLines {
+  min-height: 130px;
+  width: min(340px, 84vw);
+  font-size: 14px;
+}
+
+#loadingLines .line {
+  min-height: 22px;
+  white-space: pre;
+}
+
+.blink-cur {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--green-pure);
+  margin-left: 3px;
+  vertical-align: middle;
+}
+
+/* ===== Progress bar ===== */
+.progress-bar-container {
+  position: fixed;
+  right: 12px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gray-dim);
+  z-index: var(--z-chrome);
+}
+
+.progress-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: var(--green-pure);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+/* ===== Hamburger + overlay menu ===== */
+.hamburger {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  z-index: var(--z-menu);
+  background: transparent;
+  border: 1px solid var(--gray-dim);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: var(--green-pure);
+  transition: transform 0.3s, opacity 0.3s;
+  display: block;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.97);
+  z-index: var(--z-menu);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+.menu-overlay.open {
+  clip-path: inset(0 0 0 0%);
+}
+
+.menu-overlay ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-overlay a {
+  font-family: 'Fira Code', monospace;
+  font-size: clamp(22px, 4vw, 40px);
+  color: var(--gray-text);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.menu-overlay a:hover,
+.menu-overlay a:focus-visible {
+  color: var(--green-pure);
+}
+
+.menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--gray-dim);
+  color: var(--green-pure);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ===== section number / scroll-down ===== */
+.section-number {
+  position: fixed;
+  right: 40px;
+  bottom: 26px;
+  font-size: 70px;
+  font-weight: 700;
+  color: rgba(0, 255, 0, 0.14);
+  z-index: var(--z-chrome);
+  pointer-events: none;
+  line-height: 1;
+  transition: opacity 0.3s;
+}
+
+.scroll-down {
+  position: fixed;
+  left: 40px;
+  bottom: 30px;
+  z-index: var(--z-chrome);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--green-mid);
+  font-size: 11px;
+  letter-spacing: 3px;
+  transition: opacity 0.4s;
+}
+
+.scroll-down .s-line {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(var(--green-pure), transparent);
+  transform-origin: top;
+}
+
+.scroll-down.hide,
+.section-number.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .section-number {
+    font-size: 38px;
+    right: 16px;
+    bottom: 60px;
+  }
+
+  .scroll-down {
+    left: 16px;
+    bottom: 16px;
+  }
+}
+
+/* ===== scroll container / sections ===== */
+.scroll-container {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+.section {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 60px 90px;
+}
+
+.section-heading {
+  font-size: clamp(24px, 4vw, 34px);
+  color: var(--white);
+  margin: 0 0 36px;
+  text-align: center;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.section-heading .accent {
+  color: var(--green-pure);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 20px;
+  }
+}
+
+/* ===== HERO (section 01) ===== */
+#particlesCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-bg);
+}
+
+.ascii-deco {
+  position: absolute;
+  top: 14%;
+  right: 5%;
+  z-index: var(--z-content);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ascii-deco pre {
+  margin: 0;
+  color: var(--green-mid);
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+@media (max-width: 1024px) {
+  .ascii-deco {
+    display: none;
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 5vw, 64px);
+  max-width: 1100px;
+  width: 100%;
+}
+
+.hero-photo-col {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-text-col {
+  flex: 1 1 420px;
+  min-width: 0;
+  text-align: left;
+}
+
+.hero-name {
+  font-size: clamp(26px, 5vw, 56px);
+  font-weight: 700;
+  color: var(--green-pure);
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px var(--green-glow);
+  min-height: 1.2em;
+  margin: 0;
+}
+
+.hero-subtitle {
+  font-size: clamp(13px, 1.6vw, 16px);
+  color: var(--cyan-bright);
+  margin-top: 10px;
+}
+
+.hero-terminal {
+  margin: clamp(16px, 3vw, 32px) 0 0;
+  max-width: 560px;
+  width: 100%;
+  background: var(--bg-terminal);
+  border: 1px solid var(--gray-dim);
+  border-radius: 6px;
+  padding: clamp(14px, 2vw, 20px) clamp(16px, 2.4vw, 24px);
+  text-align: left;
+  font-size: 13.5px;
+  color: var(--green-bright);
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.08);
+}
+
+.hero-terminal .t-line {
+  min-height: 20px;
+  white-space: pre-wrap;
+}
+
+.hero-terminal .prompt {
+  color: var(--cyan-pure);
+}
+
+/* ===== PROJECTS grid (section 02) ===== */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  max-width: 1100px;
+  width: 100%;
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.project-card {
+  position: relative;
+  background: rgba(34, 34, 34, 0.35);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 0, 0.25);
+  border-radius: 8px;
+  padding: 22px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 255, 0, 0.22);
+}
+
+.project-card h3 {
+  font-family: 'Fira Code', monospace;
+  color: var(--white);
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.project-card p {
+  color: var(--gray-text);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.tag-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tag-chip {
+  font-family: 'Fira Code', monospace;
+  font-size: 10.5px;
+  padding: 3px 8px;
+  border: 1px solid var(--green-mid);
+  color: var(--green-mid);
+  border-radius: 20px;
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cyan-bright);
+  font-size: 13px;
+  text-decoration: none;
+  min-height: 44px;
+  align-content: center;
+}
+
+@media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== SPOTLIGHT cards (sections 03/04) ===== */
+.spotlight-wrap {
+  max-width: 780px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.spotlight-card {
+  background: rgba(17, 17, 17, 0.6);
+  border: 1px solid var(--green-glow);
+  border-radius: 10px;
+  padding: 32px 36px;
+}
+
+.spotlight-card h3 {
+  font-family: 'Fira Code', monospace;
+  color: var(--white);
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+
+.spotlight-card p {
+  color: var(--gray-text);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.spotlight-stats {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--green-mid);
+  font-family: 'Fira Code', monospace;
+  font-size: 12.5px;
+}
+
+.spotlight-card .card-link {
+  font-size: 14px;
+}
+
+.spotlight-placeholder {
+  border: 1px dashed var(--gray-dim);
+  border-radius: 8px;
+  padding: 16px 22px;
+  color: var(--gray-text);
+  font-family: 'Fira Code', monospace;
+  font-size: 12.5px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .spotlight-card {
+    padding: 22px;
+  }
+}
+
+/* ===== CONTACT (section 05) ===== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  max-width: 1000px;
+  width: 100%;
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.terminal-form {
+  background: var(--bg-terminal);
+  border: 1px solid var(--gray-dim);
+  border-radius: 6px;
+  padding: 24px 28px;
+  font-family: 'Fira Code', monospace;
+}
+
+.terminal-form .cmd-line {
+  color: var(--cyan-pure);
+  margin-bottom: 16px;
+  font-size: 13.5px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  color: var(--green-mid);
+  font-size: 12.5px;
+}
+
+.form-field input,
+.form-field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--green-pure);
+  color: var(--white);
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  padding: 8px 0;
+  resize: none;
+  box-sizing: border-box;
+  min-height: 44px;
+}
+
+.form-field textarea {
+  min-height: 72px;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--gray-text);
+}
+
+.send-btn {
+  background: transparent;
+  border: 1px solid var(--green-pure);
+  color: var(--green-pure);
+  font-family: 'Fira Code', monospace;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 13.5px;
+  min-height: 44px;
+  min-width: 44px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.send-btn:hover,
+.send-btn:focus-visible {
+  background: var(--green-pure);
+  color: var(--bg-primary);
+}
+
+.contact-info {
+  color: var(--gray-text);
+  font-family: 'Fira Code', monospace;
+  font-size: 12.5px;
+  margin: 0 0 18px;
+}
+
+.social-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gray-text);
+  text-decoration: none;
+  font-family: 'Fira Code', monospace;
+  font-size: 14.5px;
+  transition: color 0.25s, transform 0.25s;
+  min-height: 44px;
+}
+
+.social-link .icon {
+  width: 24px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  color: var(--cyan-pure);
+}
+
+@media (max-width: 768px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* =========================================================================
+   BATCH 2 — restructure, profile, tech grid, posters, social buttons,
+   backgrounds. Adapted from Effects-library, unified with tokens/z-index.
+   ========================================================================= */
+
+/* ===== Loading blocks spinner (Effects-library/loading-animation) ===== */
+.loader-blocks {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin-bottom: 20px;
+}
+
+.loader-blocks .blocks {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 8px;
+  height: 26px;
+  margin-left: -4px;
+  transform-origin: 4px 45px;
+  transform: rotate(calc(var(--i) * 30deg));
+  background: var(--green-pure);
+  border-radius: 3px;
+  opacity: 0.15;
+  animation: blockPulse 1.2s linear infinite;
+  animation-delay: calc(var(--i) * 0.1s);
+  box-shadow: 0 0 8px var(--green-glow);
+}
+
+@keyframes blockPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.15;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+/* ===== 01 HOME extras — profile photo, location, hero links =====
+   Feedback checkpoint 2: photo bigger + moved to the left (two-column hero
+   on desktop: photo | name/typing/terminal/links; stacked+centered on mobile). */
+.profile-photo {
+  width: clamp(150px, 15vw, 240px);
+  height: clamp(150px, 15vw, 240px);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 28%;
+  border: 3px solid var(--green-pure);
+  box-shadow: 0 0 24px var(--green-glow), 0 0 48px rgba(0, 255, 0, 0.18);
+  margin: 0;
+  display: block;
+  aspect-ratio: 1 / 1;
+}
+
+.location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 6px 14px;
+  border: 1px solid var(--green-glow);
+  border-radius: 20px;
+  color: var(--green-mid);
+  font-size: 13px;
+  background: rgba(17, 17, 17, 0.5);
+}
+
+.location-badge .loc-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--cyan-pure);
+}
+
+.location-badge .loc-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hero-links {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* Stack on mobile/tablet: photo on top, centered; text column centered too */
+@media (max-width: 900px) {
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-text-col {
+    text-align: center;
+  }
+
+  .hero-subtitle,
+  .location-badge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-links {
+    justify-content: center;
+  }
+
+  .hero-terminal {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .profile-photo {
+    width: clamp(120px, 34vw, 180px);
+    height: clamp(120px, 34vw, 180px);
+  }
+}
+
+/* Short-viewport safety: shrink hero vertical rhythm so nothing clips
+   (section has overflow:hidden — must fit within 100dvh). */
+@media (max-height: 720px) {
+  #section1 {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .hero-subtitle {
+    margin-top: 6px;
+  }
+
+  .location-badge {
+    margin-top: 8px;
+    padding: 4px 12px;
+  }
+
+  .hero-links {
+    margin-top: 12px;
+  }
+
+  .hero-terminal {
+    margin-top: 14px;
+    padding: 12px 16px;
+  }
+
+  .hero-terminal .t-line {
+    min-height: 16px;
+  }
+}
+
+@media (max-height: 720px) and (max-width: 900px) {
+  .profile-photo {
+    width: clamp(96px, 26vw, 140px);
+    height: clamp(96px, 26vw, 140px);
+  }
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--gray-dim);
+  border-radius: 6px;
+  color: var(--green-bright);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, color 0.25s;
+}
+
+.hero-link:hover,
+.hero-link:focus-visible {
+  border-color: var(--green-pure);
+  color: var(--cyan-pure);
+  box-shadow: 0 0 16px var(--green-glow);
+  transform: translateY(-2px);
+}
+
+.hero-link .hl-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+
+.hero-link .hl-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ===== Decorative infinite-text background (Sobre mí / Tecnologías) ===== */
+.bg-infinite-text {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-bg);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.06;
+  display: flex;
+  align-items: center;
+}
+
+.bg-infinite-text .it-flow {
+  font-family: 'Fira Code', monospace;
+  font-size: clamp(40px, 8vw, 90px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 4px;
+  color: var(--green-pure);
+  white-space: normal;
+  word-break: break-word;
+  animation: itDrift 40s linear infinite;
+}
+
+@keyframes itDrift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-6%);
+  }
+}
+
+/* ===== 02 SOBRE MÍ ===== */
+.about-wrap,
+.tech-wrap {
+  position: relative;
+  z-index: var(--z-content);
+  max-width: 860px;
+  width: 100%;
+}
+
+.about-card {
+  background: rgba(17, 17, 17, 0.6);
+  border: 1px solid var(--green-glow);
+  border-radius: 12px;
+  padding: 32px 38px;
+  backdrop-filter: blur(6px);
+}
+
+.about-lead {
+  color: var(--cyan-bright);
+  font-size: 16px;
+  margin: 0 0 18px;
+}
+
+.about-card p {
+  color: var(--green-soft);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 14px;
+}
+
+.about-interests {
+  align-items: center;
+  margin-top: 18px;
+}
+
+.about-interests-label {
+  color: var(--gray-text);
+  font-size: 12.5px;
+  margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  .about-card {
+    padding: 22px;
+  }
+}
+
+/* ===== 03 TECNOLOGÍAS ===== */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 22px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.tech-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 8px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.tech-tile:hover,
+.tech-tile:focus-within {
+  transform: translateY(-5px);
+  border-color: var(--brand);
+  box-shadow: 0 0 20px -2px var(--brand);
+}
+
+.tech-badge {
+  width: 56px;
+  height: 56px;
+}
+
+.tech-name {
+  font-size: 12.5px;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+
+/* ===== 04/05/06 CANVAS POSTERS ===== */
+.section--poster {
+  padding: 0;
+}
+
+.poster-link {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.poster-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-bg);
+  display: block;
+}
+
+.poster-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-content);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 40px;
+  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.2), rgba(10, 10, 10, 0.55));
+  transition: background 0.35s;
+}
+
+.poster-kicker {
+  color: var(--cyan-bright);
+  font-size: 13px;
+  letter-spacing: 4px;
+}
+
+.poster-title {
+  color: var(--white);
+  font-size: clamp(36px, 8vw, 72px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 0 0 24px var(--green-glow);
+  margin: 0;
+}
+
+.poster-sub {
+  color: var(--green-mid);
+  font-size: clamp(12px, 2.4vw, 15px);
+  letter-spacing: 1px;
+  max-width: 90%;
+}
+
+.poster-enter {
+  margin-top: 10px;
+  padding: 10px 22px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--green-pure);
+  border-radius: 6px;
+  color: var(--green-pure);
+  font-size: 14px;
+  letter-spacing: 2px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s, background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.poster-link:hover .poster-overlay,
+.poster-link:focus-visible .poster-overlay {
+  background: radial-gradient(circle at center, rgba(0, 40, 20, 0.25), rgba(10, 10, 10, 0.72));
+}
+
+.poster-link:hover .poster-enter,
+.poster-link:focus-visible .poster-enter {
+  opacity: 1;
+  transform: translateY(0);
+  background: var(--green-pure);
+  color: var(--bg-primary);
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+/* Touch: no hover, so keep the CTA visible */
+@media (hover: none) {
+  .poster-enter {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== 07 CONTACTO — footer green lights + social buttons ===== */
+.section--contact {
+  justify-content: center;
+}
+
+.green-lights-canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  width: 100%;
+  z-index: var(--z-bg);
+  pointer-events: none;
+}
+
+.contact-side {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.social-buttons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+
+.social-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.sb-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.sb-face {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: rgba(17, 17, 17, 0.9);
+  border: 1px solid var(--brand);
+  color: var(--brand);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.sb-face svg {
+  width: 24px;
+  height: 24px;
+}
+
+.sb-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 10px;
+  background: var(--brand);
+  opacity: 0;
+  transition: transform 0.4s, opacity 0.4s;
+}
+
+.sb-link:hover .sb-face,
+.sb-link:focus-visible .sb-face {
+  background: var(--brand);
+  color: #0a0a0a;
+  transform: translate(-6px, -6px);
+  box-shadow: 0 0 18px -2px var(--brand);
+}
+
+.sb-link:hover .sb-shadow:nth-child(1),
+.sb-link:focus-visible .sb-shadow:nth-child(1) {
+  transform: translate(-2px, -2px);
+  opacity: 0.5;
+}
+
+.sb-link:hover .sb-shadow:nth-child(2),
+.sb-link:focus-visible .sb-shadow:nth-child(2) {
+  transform: translate(2px, 2px);
+  opacity: 0.3;
+}
+
+.sb-link:hover .sb-shadow:nth-child(3),
+.sb-link:focus-visible .sb-shadow:nth-child(3) {
+  transform: translate(6px, 6px);
+  opacity: 0.15;
+}
+
+.contact-info {
+  color: var(--gray-text);
+  font-size: 12.5px;
+  margin: 0;
+}
+
+/* =========================================================================
+   BATCH 3 — effects (js/effects.js + js/konami.js + js/subpage-effects.js).
+   Custom cursor, scanline overlay, glitch titles, confetti, sound toggle,
+   subpage decorative canvases (matrix rain / dot grid), Konami takeover.
+   ========================================================================= */
+
+/* ===== Custom cursor (hover:hover + pointer:fine only, JS-gated) ===== */
+@media (hover: hover) and (pointer: fine) {
+  html.pf-custom-cursor,
+  html.pf-custom-cursor a,
+  html.pf-custom-cursor button,
+  html.pf-custom-cursor [role='button'] {
+    cursor: none;
+  }
+
+  /* Keep the native text cursor for editable fields (design.md D4). */
+  html.pf-custom-cursor input,
+  html.pf-custom-cursor textarea {
+    cursor: text;
+  }
+}
+
+.cursor-dot,
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--green-pure);
+  box-shadow: 0 0 8px var(--green-glow);
+  transition: width 0.18s ease, height 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cursor-dot.cursor-active {
+  width: 26px;
+  height: 26px;
+  background: var(--cyan-pure);
+  box-shadow: 0 0 18px var(--cyan-glow);
+}
+
+.cursor-trail {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--green-glow);
+  transition: border-color 0.18s ease, width 0.18s ease, height 0.18s ease;
+}
+
+.cursor-trail.cursor-active {
+  border-color: var(--cyan-glow);
+  width: 46px;
+  height: 46px;
+}
+
+/* ===== CRT scanline overlay (site-wide, JS-created + gated) ===== */
+.scanline-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-scanline);
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 0, 0.05) 0px,
+    rgba(0, 255, 0, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+/* ===== Glitch on section-title viewport entry (once per element) =====
+   Deliberately does NOT change `display` — `.section-heading` (h2, block,
+   centered via its own text-align) and `.poster-title` (flex item) must
+   keep their existing box type or centering breaks. */
+.glitch-title {
+  position: relative;
+}
+
+.glitch-title.glitching::before,
+.glitch-title.glitching::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.glitch-title.glitching::before {
+  color: var(--cyan-pure);
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  animation: glitchTop 0.42s steps(2, end) 1;
+}
+
+.glitch-title.glitching::after {
+  color: var(--red-accent);
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  animation: glitchBottom 0.42s steps(2, end) 1;
+}
+
+/* ===== Confetti burst (contact form submit / Contacto first activation) ===== */
+.confetti-burst {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 38%;
+  width: 8px;
+  height: 8px;
+  opacity: 0.9;
+  animation: confettiFall 1.4s ease-out forwards;
+}
+
+/* ===== Sound toggle (corner button, JS-created) ===== */
+.sound-toggle {
+  position: fixed;
+  top: 20px;
+  right: 74px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  z-index: var(--z-menu);
+  background: transparent;
+  border: 1px solid var(--gray-dim);
+  border-radius: 6px;
+  color: var(--green-pure);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.sound-toggle:hover,
+.sound-toggle:focus-visible {
+  border-color: var(--green-pure);
+  box-shadow: 0 0 14px var(--green-glow);
+}
+
+.sound-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ===== Subpage decorative fx canvas (matrix rain / dot grid) ===== */
+.subpage-fx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: var(--z-bg);
+  pointer-events: none;
+}
+
+/* ===== Konami full-screen matrix takeover ===== */
+.konami-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9500;
+  pointer-events: none;
+}
+
+/* =========================================================================
+   CHECKPOINT 3 — merged Sobre mí, Proyectos split + Blocks preview,
+   2x2 3D social matrix, professional links in the contact form column.
+   ========================================================================= */
+
+/* ---- 02 SOBRE MÍ unificado (bio izquierda + tecnologías derecha) ---- */
+.about-merged {
+  position: relative;
+  z-index: var(--z-content);
+  width: 100%;
+  max-width: 1080px;
+}
+
+.about-merged .section-heading {
+  margin-bottom: 26px;
+}
+
+.about-columns {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.about-tech-label,
+.contact-pro-label,
+.contact-social-label,
+.blocks-preview-label {
+  color: var(--cyan-bright);
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin: 0 0 14px;
+  opacity: 0.85;
+}
+
+.about-col-tech .tech-grid {
+  margin: 0;
+  max-width: none;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 860px) {
+  .about-columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .about-col-tech .tech-grid {
+    grid-template-columns: repeat(auto-fit, minmax(78px, 1fr));
+  }
+}
+
+/* ---- 04 PROYECTOS: poster (izq) + preview jugable Blocks (der) ---- */
+.section--proyectos {
+  padding: 0;
+}
+
+.proyectos-split {
+  position: relative;
+  z-index: var(--z-content);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 340px);
+}
+
+.proyectos-poster {
+  position: relative;
+  height: 100%;
+}
+
+.blocks-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  background: rgba(4, 7, 10, 0.65);
+  border-left: 1px solid var(--green-glow);
+}
+
+.blocks-preview-btn {
+  position: relative;
+  display: block;
+  padding: 0;
+  line-height: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: #000;
+  border: 1px solid var(--green-glow);
+  border-radius: 8px;
+  box-shadow: 0 0 18px rgba(0, 255, 0, 0.12);
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+
+.blocks-preview-canvas {
+  display: block;
+  width: 200px;
+  height: 260px;
+  max-width: 100%;
+  transition: filter 0.3s ease;
+}
+
+.blocks-preview-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--green-bright);
+  transition: opacity 0.3s ease;
+}
+
+.blocks-preview-icon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.blocks-preview-text {
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+.blocks-preview-btn:hover .blocks-preview-canvas,
+.blocks-preview-btn:focus-visible .blocks-preview-canvas {
+  filter: blur(3px) brightness(0.65);
+}
+
+.blocks-preview-btn:hover .blocks-preview-overlay,
+.blocks-preview-btn:focus-visible .blocks-preview-overlay {
+  opacity: 1;
+}
+
+.blocks-preview-btn:hover,
+.blocks-preview-btn:focus-visible {
+  box-shadow: 0 0 26px var(--green-glow);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 860px) {
+  .proyectos-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  .blocks-preview {
+    border-left: none;
+    border-top: 1px solid var(--green-glow);
+    padding: 16px;
+  }
+  .blocks-preview-canvas {
+    width: 150px;
+    height: 195px;
+  }
+}
+
+/* ---- CONTACTO: professional links in the form column ---- */
+.contact-pro {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-dim);
+}
+
+.social-pro {
+  gap: 18px;
+}
+
+/* ---- CONTACTO: 2x2 isometric 3D social matrix (YouTube/FB/IG/TikTok) ----
+   Adapted from Effects-library/social-media-buttons: an isometric skew with
+   stacked layers that extrude on hover/focus. Brand SVGs, palette-consistent. */
+.social-3d {
+  list-style: none;
+  margin: 0;
+  padding: 24px 40px 24px 34px;
+  display: grid;
+  grid-template-columns: repeat(2, 60px);
+  grid-template-rows: repeat(2, 60px);
+  gap: 40px 52px;
+  width: max-content;
+}
+
+.s3d-item {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  transform: rotate(-30deg) skew(25deg);
+}
+
+.s3d-link {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.s3d-layer,
+.s3d-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s, opacity 0.5s, background 0.4s, color 0.4s;
+}
+
+.s3d-layer {
+  background: var(--brand);
+  opacity: 0;
+}
+
+.s3d-layer:nth-child(1) { z-index: 2; }
+.s3d-layer:nth-child(2) { z-index: 3; }
+.s3d-layer:nth-child(3) { z-index: 4; }
+
+.s3d-face {
+  z-index: 5;
+  background: rgba(17, 17, 17, 0.95);
+  border: 1px solid var(--brand);
+  color: var(--brand);
+}
+
+.s3d-face svg {
+  width: 26px;
+  height: 26px;
+}
+
+.s3d-link:hover .s3d-face,
+.s3d-link:focus-visible .s3d-face {
+  transform: translate(30px, -30px);
+  background: var(--brand);
+  color: #0a0a0a;
+  box-shadow: 0 0 18px -2px var(--brand);
+}
+
+.s3d-link:hover .s3d-layer:nth-child(3),
+.s3d-link:focus-visible .s3d-layer:nth-child(3) {
+  transform: translate(22px, -22px);
+  opacity: 0.7;
+}
+
+.s3d-link:hover .s3d-layer:nth-child(2),
+.s3d-link:focus-visible .s3d-layer:nth-child(2) {
+  transform: translate(14px, -14px);
+  opacity: 0.45;
+}
+
+.s3d-link:hover .s3d-layer:nth-child(1),
+.s3d-link:focus-visible .s3d-layer:nth-child(1) {
+  transform: translate(6px, -6px);
+  opacity: 0.2;
+}
+
+@media (max-width: 768px) {
+  .social-3d {
+    gap: 34px 46px;
+    padding: 20px 34px 20px 28px;
+    margin: 0 auto;
+  }
+}
+
+/* Reduced motion: keep the 3D socials + preview legible without motion. */
+@media (prefers-reduced-motion: reduce) {
+  .s3d-layer,
+  .s3d-face,
+  .blocks-preview-canvas,
+  .blocks-preview-overlay,
+  .blocks-preview-btn {
+    transition: none;
+  }
+}
+
+/* =========================================================================
+   CHECKPOINT 4 — CV button, "Sobre mí" interests, lightbox.
+   ========================================================================= */
+
+/* ----- CV button (hero, next to the profile photo) ----- */
+.hero-photo-col {
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.cv-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 1px solid var(--green-pure);
+  border-radius: 6px;
+  background: rgba(17, 17, 17, 0.55);
+  color: var(--green-bright);
+  text-decoration: none;
+  font-size: 13.5px;
+  letter-spacing: 0.5px;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, color 0.25s, background 0.25s;
+}
+
+.cv-button:hover,
+.cv-button:focus-visible {
+  color: var(--bg-primary);
+  background: var(--green-pure);
+  box-shadow: 0 0 18px var(--green-glow);
+  transform: translateY(-2px);
+}
+
+.cv-button .cv-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+
+.cv-button .cv-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ----- "Sobre mí" interests: white, larger, monospace tags ----- */
+.about-interests .tag-chip {
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  color: var(--white);
+  border-color: var(--green-mid);
+  padding: 5px 12px;
+}
+
+.about-interests-label {
+  color: var(--white);
+  font-size: 13.5px;
+}
+
+/* ----- Image lightbox ----- */
+.pf-lb-trigger {
+  cursor: zoom-in;
+}
+
+.pf-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 5, 3, 0.92);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.pf-lightbox.visible {
+  opacity: 1;
+}
+
+.pf-lb-dialog {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pf-lb-stage {
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.pf-lb-img {
+  max-width: 92vw;
+  max-height: 88vh;
+  border-radius: 10px;
+  border: 1px solid var(--green-glow);
+  box-shadow: 0 0 40px rgba(0, 255, 0, 0.18);
+  transform-origin: center center;
+  transition: transform 0.12s ease-out;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pf-lb-controls {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+.pf-lb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--gray-dim);
+  background: rgba(10, 10, 10, 0.72);
+  color: var(--green-bright);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, color 0.2s, background 0.2s;
+}
+
+.pf-lb-btn:hover,
+.pf-lb-btn:focus-visible {
+  border-color: var(--green-pure);
+  color: var(--cyan-pure);
+  box-shadow: 0 0 14px var(--green-glow);
+}
+
+.pf-lb-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+body.pf-lb-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  /* Checkpoint 5: move lightbox controls to the bottom-centre on mobile so they
+     are thumb-reachable one-handed (top corners are hard to reach). */
+  .pf-lb-controls {
+    top: auto;
+    bottom: 18px;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-button,
+  .pf-lightbox,
+  .pf-lb-img {
+    transition: none;
+  }
+}
+
+/* =========================================================================
+   CHECKPOINT 4 — TANDA B (visual + juegos embebidos)
+   Honeycomb tech · infinite-text shine · pentagon socials · in-place games ·
+   section backgrounds (sweep / grid+ripples) · green-lights fade.
+   ========================================================================= */
+
+/* ----- Honeycomb of technology hexagons (Sobre mí, columna derecha) ----- */
+.tech-hex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 4px 0 0;
+}
+.hexrow {
+  display: flex;
+  gap: 10px;
+}
+.hexrow + .hexrow {
+  margin-top: -20px;
+}
+.hexrow:nth-child(even) {
+  margin-left: 53px;
+}
+.hex {
+  position: relative;
+  width: 96px;
+  height: 108px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  background: #151515;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  transition: background 3.6s ease; /* slow fade-out back to dim on mouseleave */
+}
+.hex:hover,
+.hex:focus-visible,
+.hex.is-lit {
+  background: var(--hexfill, var(--brand));
+  transition: background 0.22s ease; /* fast paint on hover/focus/tap */
+  outline: none;
+}
+.hex:focus-visible {
+  filter: drop-shadow(0 0 5px var(--cyan-pure));
+}
+.hex-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.hex-icon {
+  width: 40px;
+  height: 40px;
+  filter: grayscale(1) brightness(1.5) opacity(0.5);
+  transition: filter 3.6s ease;
+}
+.hex:hover .hex-icon,
+.hex:focus-visible .hex-icon,
+.hex.is-lit .hex-icon {
+  /* full-color icon + a dark halo so the logo never melts into the painted
+     cell, even when icon hue ≈ fill hue (checkpoint 5). */
+  filter: grayscale(0) brightness(1) opacity(1)
+    drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.9));
+  transition: filter 0.22s ease;
+}
+.hex-name {
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+  color: #e8ffe8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+.hex-invite {
+  animation: hexInvite 1.7s ease-in-out infinite;
+}
+
+/* ----- Infinite-text: alternating rows + cursor metallic shine ----- */
+.section--about .bg-infinite-text {
+  opacity: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+.section--about .bg-infinite-text .it-flow {
+  font-size: clamp(24px, 4.4vw, 52px);
+  line-height: 1.05;
+  white-space: nowrap;
+  color: rgba(90, 255, 130, 0.07);
+  will-change: transform;
+}
+.section--about .bg-infinite-text .it-ltr {
+  animation: itDriftLtr 42s linear infinite;
+}
+.section--about .bg-infinite-text .it-rtl {
+  animation: itDriftRtl 42s linear infinite;
+}
+.it-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle 170px at var(--mx, 50%) var(--my, 50%),
+    rgba(210, 255, 220, 0.55), rgba(140, 220, 255, 0.2) 42%, transparent 72%);
+  transition: opacity 0.4s ease;
+}
+.bg-infinite-text.it-lit .it-shine {
+  opacity: 1;
+}
+
+/* ----- Contact PENTAGON (5 nodes; keeps the 3D-hover extrude) ----- */
+.social-3d {
+  position: relative;
+  display: block;
+  width: 260px;
+  height: 250px;
+  margin: 12px auto 0;
+  padding: 0;
+  list-style: none;
+}
+.social-3d .s3d-item {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+}
+.social-3d .s3d-item:nth-child(1) { top: 11px;  left: 101px; }
+.social-3d .s3d-item:nth-child(2) { top: 73px;  left: 187px; }
+.social-3d .s3d-item:nth-child(3) { top: 174px; left: 154px; }
+.social-3d .s3d-item:nth-child(4) { top: 174px; left: 48px; }
+.social-3d .s3d-item:nth-child(5) { top: 73px;  left: 15px; }
+.contact-side {
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+
+/* ----- Shared in-place embed lifecycle (Blocks / Diana) ----- */
+.pf-embed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pf-embed-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: filter 0.35s ease;
+}
+.pf-embed.is-idle .pf-embed-stage,
+.pf-embed.is-paused .pf-embed-stage {
+  filter: blur(3px) brightness(0.6);
+}
+.pf-embed-cta {
+  position: absolute;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--green-pure);
+  background: rgba(0, 20, 0, 0.55);
+  color: var(--green-bright);
+  font-size: 15px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.pf-embed.is-idle .pf-embed-cta {
+  opacity: 1;
+  pointer-events: auto;
+}
+.pf-embed .pf-embed-cta:hover,
+.pf-embed .pf-embed-cta:focus-visible {
+  box-shadow: 0 0 22px var(--green-glow);
+  transform: scale(1.05);
+}
+.pf-embed-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.pf-embed-pause {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan-bright);
+  font-size: 20px;
+  letter-spacing: 5px;
+  text-shadow: 0 0 14px var(--cyan-glow);
+}
+.pf-embed.is-paused .pf-embed-pause {
+  display: flex;
+}
+/* focus effect: the rest of the section dims slightly while playing */
+.section.pf-embed-focus .poster-link {
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
+}
+.pf-blocks3d-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.pf-blocks3d-score {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: var(--yellow-accent);
+  font-size: 14px;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+.pf-diana-canvas {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  border: 1px solid var(--green-glow);
+  border-radius: 6px;
+  background: #020a04;
+  touch-action: none;
+}
+
+/* ----- 03 LOGROS split: poster (izq) + TicTacToe (der) ----- */
+.section--logros { padding: 0; }
+/* Checkpoint 5: TicTacToe on the LEFT, poster/text on the RIGHT, and NO divider
+   — the two columns must read as one seamless page (no border/background seam
+   on the game wrapper). */
+.logros-split {
+  position: relative;
+  z-index: var(--z-content);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(300px, 420px) 1fr;
+}
+.logros-poster {
+  position: relative;
+  height: 100%;
+}
+.ttt-embed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  background: transparent;
+  border: none;
+}
+.ttt-embed-label {
+  color: var(--cyan-bright);
+  font-size: 12px;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+.ttt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.ttt-status {
+  color: var(--green-soft);
+  font-size: 13px;
+  min-height: 18px;
+  text-align: center;
+}
+.ttt-x { color: var(--green-pure); font-weight: 700; }
+.ttt-o { color: var(--cyan-pure); font-weight: 700; }
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 74px);
+  grid-template-rows: repeat(3, 74px);
+  gap: 6px;
+}
+.ttt-cell {
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fira Code', monospace;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--white);
+  background: rgba(17, 17, 17, 0.92);
+  border: 1px solid var(--green-glow);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.ttt-cell:hover:not(:disabled) {
+  background: rgba(0, 255, 0, 0.08);
+  box-shadow: 0 0 12px var(--green-glow);
+}
+.ttt-cell:disabled { cursor: default; }
+.ttt-cell.is-x { color: var(--green-pure); text-shadow: 0 0 10px var(--green-glow); }
+.ttt-cell.is-o { color: var(--cyan-pure); text-shadow: 0 0 10px var(--cyan-glow); }
+.ttt-cell.ttt-win {
+  background: rgba(0, 255, 0, 0.16);
+  border-color: var(--green-pure);
+}
+.ttt-scores { color: var(--gray-text); font-size: 12px; }
+.ttt-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--cyan-pure);
+  border-radius: 6px;
+  color: var(--cyan-bright);
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  font-size: 12.5px;
+  transition: background 0.2s;
+}
+.ttt-reset:hover { background: rgba(0, 255, 255, 0.12); }
+.ttt-reset-icon svg { width: 16px; height: 16px; }
+
+/* ----- 04 PROYECTOS: lateral illumination sweeping left→right ----- */
+.proyectos-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-bg);
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, rgba(0, 255, 120, 0.05) 44%,
+    rgba(0, 255, 190, 0.1) 50%, rgba(0, 255, 120, 0.05) 56%, transparent 100%);
+  background-size: 220% 100%;
+  animation: proyectosSweep 9s linear infinite;
+  animation-play-state: paused;
+}
+body[data-section='section4'] .proyectos-sweep {
+  animation-play-state: running;
+}
+.blocks-embed {
+  position: relative;
+  height: 100%;
+  min-height: 270px;
+  background: rgba(4, 7, 10, 0.65);
+  border-left: 1px solid var(--green-glow);
+}
+
+/* ----- 05 FORMACIÓN: green grid + centre ripples + Diana embed ----- */
+.section--formacion {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.formacion-bg {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-bg);
+  pointer-events: none;
+  background: linear-gradient(160deg, #04120a 0%, #061a0e 50%, #020a05 100%);
+}
+.formacion-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 255, 120, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 120, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+  -webkit-mask-image: radial-gradient(circle at 50% 55%, #000 32%, transparent 85%);
+  mask-image: radial-gradient(circle at 50% 55%, #000 32%, transparent 85%);
+}
+.formacion-ripple {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 2px solid rgba(0, 255, 140, 0.5);
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 0;
+  animation: formacionRipple 5s ease-out infinite;
+  animation-play-state: paused;
+}
+.formacion-ripple:nth-child(2) { animation-delay: 1.66s; }
+.formacion-ripple:nth-child(3) { animation-delay: 3.33s; }
+body[data-section='section5'] .formacion-ripple {
+  animation-play-state: running;
+}
+.formacion-split {
+  position: relative;
+  z-index: var(--z-content);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(300px, 460px) 1fr;
+  align-items: center;
+}
+.diana-embed {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.formacion-poster {
+  position: relative;
+  height: 100%;
+}
+
+/* ----- 06 CONTACTO green-lights: fade smoothly to black at the top ----- */
+.green-lights-canvas {
+  height: 55%;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 22%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, #000 22%, transparent 100%);
+}
+
+/* ----- Responsive stacking for the split game sections ----- */
+@media (max-width: 900px) {
+  .logros-split,
+  .proyectos-split,
+  .formacion-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  .blocks-embed {
+    border-left: none;
+    border-top: 1px solid var(--green-glow);
+  }
+  /* Embedded games stack UNDER the text/poster on mobile (checkpoint 5 item 7).
+     Logros keeps a seamless game wrapper (no divider). */
+  .logros-poster { order: 1; }
+  .ttt-embed { order: 2; border: none; }
+  /* Formación: poster/text on top, Diana below. */
+  .formacion-split { grid-template-rows: 1fr auto; }
+  .formacion-poster { order: 1; }
+  .diana-embed { order: 2; }
+}
+@media (max-width: 540px) {
+  .social-3d { transform: scale(0.86); transform-origin: center; }
+  .ttt-board {
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+  }
+  .ttt-cell { width: 60px; height: 60px; font-size: 30px; }
+}
+
+/* ----- Mobile: lighten heavy backgrounds (static) ----- */
+@media (max-width: 767px) {
+  .proyectos-sweep,
+  .formacion-ripple {
+    display: none;
+  }
+  .hex-invite { animation: none; }
+}
+
+/* ----- Reduced motion floor for Tanda B ----- */
+@media (prefers-reduced-motion: reduce) {
+  .proyectos-sweep,
+  .formacion-ripple,
+  .hex-invite {
+    animation: none !important;
+  }
+  .hex,
+  .hex-icon,
+  .hex-name,
+  .pf-embed-stage,
+  .it-shine {
+    transition: none !important;
+  }
+  .it-shine { display: none; }
+}
+
+/* =========================================================================
+   CHECKPOINT 5 — responsive hardening (absorbs the Batch 5 responsive audit).
+   Targets: 320 / 375 / 768 / 1024 / 1440. No horizontal scroll; honeycomb +
+   pentagon scale without overlap; embedded games touch-friendly + stacked
+   under text on mobile (handled above); posters full-width.
+   ========================================================================= */
+
+/* Global guard against accidental horizontal overflow on very narrow screens. */
+html, body { max-width: 100%; }
+
+/* ----- Honeycomb scales down so 3 hexes + the even-row offset never exceed
+   the viewport at 375/320px. Centered on mobile (single-column Sobre mí). ----- */
+@media (max-width: 860px) {
+  .tech-hex {
+    align-items: center;
+    align-self: center;
+  }
+}
+@media (max-width: 640px) {
+  .hexrow { gap: 8px; }
+  .hexrow + .hexrow { margin-top: -16px; }
+  .hexrow:nth-child(even) { margin-left: 44px; }
+  .hex { width: 78px; height: 88px; }
+  .hex-icon { width: 32px; height: 32px; }
+  .hex-name { font-size: 9.5px; }
+}
+@media (max-width: 380px) {
+  .hexrow { gap: 6px; }
+  .hexrow + .hexrow { margin-top: -13px; }
+  .hexrow:nth-child(even) { margin-left: 35px; }
+  .hex { width: 64px; height: 72px; }
+  .hex-icon { width: 26px; height: 26px; }
+  .hex-name { font-size: 8.5px; }
+}
+
+/* ----- Pentagon socials: scale further on the smallest screens so the five
+   absolute nodes never overlap the form column / viewport edge. ----- */
+@media (max-width: 380px) {
+  .social-3d { transform: scale(0.74); transform-origin: center; }
+  .contact-side { min-height: 260px; }
+}
+
+/* ----- Embedded game stages: guarantee a touch-friendly minimum on mobile,
+   keep the Blocks 3D canvas within the viewport height when stacked. ----- */
+@media (max-width: 900px) {
+  .blocks-embed,
+  .pf-embed,
+  .pf-embed-stage {
+    min-height: 240px;
+  }
+  .pf-blocks3d-canvas { max-height: 46vh; }
+}
+
+/* ----- Tablet (768–1024): keep the two-column contact grid from getting
+   cramped; allow the form/side to breathe. ----- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .contact-grid { gap: 36px; }
+  .about-columns { gap: 28px; }
+}
