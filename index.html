@@ -44,17 +44,10 @@
   </div>
 
   <!-- Language toggle (ES / EN) -->
-  <button
-    class="lang-toggle mono"
-    id="langToggleBtn"
-    type="button"
-    aria-label="Cambiar idioma a inglés"
-    title="Español / English"
-  >
-    <span class="lang-opt is-active" data-lang-opt="es">ES</span>
-    <span class="lang-sep" aria-hidden="true">/</span>
-    <span class="lang-opt" data-lang-opt="en">EN</span>
-  </button>
+  <div class="lang-toggle mono" id="langToggle" role="group" aria-label="Idioma / Language">
+    <button type="button" class="lang-btn is-active" data-lang-btn="es" aria-pressed="true" aria-label="Español">ES</button>
+    <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="false" aria-label="English">EN</button>
+  </div>
 
   <!-- Hamburger + overlay menu -->
   <button
@@ -94,7 +87,7 @@
       <div class="ascii-deco" id="asciiDecoHero" aria-hidden="true"></div>
       <div class="hero-content">
         <div class="hero-photo-col">
-          <img class="profile-photo" src="assets/img/perfil.png" width="720" height="1280"
+          <img class="profile-photo" src="assets/img/perfil.jpg" width="720" height="720"
                alt="Retrato de Erick Luis Flores Paz" data-i18n-alt="hero.photoAlt" />
           <a class="cv-button mono" href="assets/curriculum.pdf" target="_blank" rel="noopener"
              aria-label="Abrir currículum en PDF (se abre en una pestaña nueva)" data-i18n-aria="hero.cvAria">
@@ -174,7 +167,7 @@
           <div class="poster-overlay">
             <span class="poster-kicker mono" data-i18n="proyectos.kicker">04 · PROYECTOS</span>
             <span class="poster-title mono" data-i18n="proyectos.title">Proyectos</span>
-            <span class="poster-sub mono" data-i18n="proyectos.sub">Tetris · Tic-Tac-Toe · Billetes · EcoAlerta</span>
+            <span class="poster-sub mono" data-i18n="proyectos.sub">Moneda Cup · Galley (NASA) · EcoAlerta · Billetes</span>
             <span class="poster-enter mono" data-i18n="poster.enter">INGRESAR →</span>
           </div>
         </a>

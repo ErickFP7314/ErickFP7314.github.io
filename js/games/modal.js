@@ -256,11 +256,8 @@ PF.games = PF.games || {};
   function wireSubpageBadges() {
     var page = document.body.getAttribute('data-page');
     if (page === 'proyectos') {
-      // Checkpoint 4: aproximation_NGP (Pong) and harnes-erickfp (Typing)
-      // migrated into Proyectos alongside the tetris → Snake badge.
       attachBadge(findSubItemBody('projects', 'tetris'), 'snake');
       attachBadge(findSubItemBody('projects', 'aproximation_ngp'), 'pong');
-      attachBadge(findSubItemBody('projects', 'harnes-erickfp'), 'typing');
     } else if (page === 'logros') {
       // Diana badge migrated with the gold medal into Logros.
       attachBadge(findSubItemBody('logros', 'medalla-oro-obi'), 'diana');

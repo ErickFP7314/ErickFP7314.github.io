@@ -189,49 +189,63 @@ button {
   box-shadow: 0 0 10px var(--green-glow);
 }
 
-/* ===== Language toggle (ES / EN) ===== */
+/* ===== Language toggle (ES / EN segmented buttons) ===== */
 .lang-toggle {
   position: fixed;
   top: 20px;
-  right: 74px;
+  right: 76px;
   height: 44px;
-  padding: 0 12px;
+  padding: 4px;
   z-index: var(--z-chrome);
-  background: rgba(10, 10, 10, 0.78);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--gray-dim);
-  border-radius: 6px;
-  color: var(--gray-text);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid var(--green-pure);
+  border-radius: 8px;
+  box-shadow: 0 0 16px rgba(0, 255, 0, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lang-btn {
+  height: 34px;
+  min-width: 40px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
   font-size: 13px;
+  font-weight: 600;
   letter-spacing: 1px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.lang-toggle:hover,
-.lang-toggle:focus-visible {
-  border-color: var(--green-pure);
-  box-shadow: 0 0 14px var(--green-glow);
-  background: rgba(17, 17, 17, 0.92);
+.lang-btn:hover,
+.lang-btn:focus-visible {
+  border-color: var(--cyan-pure);
+  color: var(--cyan-pure);
+  background: rgba(0, 255, 255, 0.12);
 }
 
-.lang-toggle .lang-opt {
-  color: var(--gray-text);
-  transition: color 0.2s, text-shadow 0.2s;
-}
-
-.lang-toggle .lang-opt.is-active {
-  color: var(--green-pure);
+.lang-btn.is-active {
+  background: var(--green-pure);
+  color: #050505;
   font-weight: 700;
-  text-shadow: 0 0 8px var(--green-glow);
+  border-color: var(--green-pure);
+  box-shadow: 0 0 12px var(--green-glow);
 }
 
-.lang-toggle .lang-sep {
-  color: var(--gray-dim);
+.lang-btn.is-active:hover,
+.lang-btn.is-active:focus-visible {
+  background: var(--green-bright);
+  color: #050505;
+  border-color: var(--green-bright);
 }
 
 /* ===== Hamburger + overlay menu ===== */
@@ -825,7 +839,7 @@ button {
   height: clamp(150px, 15vw, 240px);
   border-radius: 50%;
   object-fit: cover;
-  object-position: center 28%;
+  object-position: center;
   border: 3px solid var(--green-pure);
   box-shadow: 0 0 24px var(--green-glow), 0 0 48px rgba(0, 255, 0, 0.18);
   margin: 0;

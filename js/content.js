@@ -50,7 +50,7 @@ window.PF = window.PF || {};
     location: 'Cochabamba, Bolivia',
     github: 'https://github.com/ErickFP7314',
     linkedin: 'https://www.linkedin.com/in/erick-luis-flores-paz-095120322/',
-    profileImg: { src: 'assets/img/perfil.png', alt: 'Retrato de Erick Luis Flores Paz', w: 720, h: 1280 }
+    profileImg: { src: 'assets/img/perfil.jpg', alt: 'Retrato de Erick Luis Flores Paz', w: 720, h: 720 }
   };
 
   // Socials — inline SVG brand icons + per-brand color.
@@ -188,19 +188,40 @@ window.PF = window.PF || {};
       visual: 'stats' // no screenshot exists → generated CSS/SVG stats visual
     },
     {
-      id: 'harnes-erickfp',
-      title: 'harnes-erickfp',
-      lang: 'Dev Tool',
-      date: '2025',
-      dateISO: '2025-08-01',
-      description: 'CLI harness para agentes de IA con puerta de aprobación humana obligatoria, pensado para flujos de desarrollo asistido seguros.',
-      stats: ['Puerta de aprobación humana obligatoria', '126 tests · 95% de cobertura', 'Orquestación de agentes de IA vía CLI'],
-      link: 'https://github.com/ErickFP7314/harnes-erickfp',
+      id: 'moneda-cup',
+      title: 'Moneda Cup — Plataforma de Torneo de Futsal',
+      lang: 'Freelance Full-Stack',
+      date: '26 sep – 15 nov 2026',
+      dateISO: '2026-11-15',
+      description: 'Producto finalizado desarrollado como freelancer full-stack para un equipo de organizadores de partidos de futsal en Potosí. Incluye marcador en vivo por WebSockets, tabla de posiciones, consola de administración, panel para delegados y asistente con Workers AI.',
+      note: 'Arquitectura serverless 24/7 en Cloudflare (React 19, TypeScript, Hono, D1, Durable Objects) con pruebas Vitest/Playwright y costo $0/mes.',
+      tags: ['React 19', 'TypeScript', 'Hono', 'Cloudflare Workers', 'D1', 'WebSockets'],
+      link: 'https://moneda-cup.pages.dev/',
+      linkLabel: 'Ver sitio en vivo',
+      linkType: 'web',
+      images: [
+        { src: 'assets/img/moneda-cup-live.png', alt: 'Moneda Cup: marcador en vivo y partidos en modo oscuro', w: 1440, h: 960 },
+        { src: 'assets/img/moneda-cup-console.png', alt: 'Moneda Cup: consola de administración del comité organizador', w: 1440, h: 972 },
+        { src: 'assets/img/moneda-cup-delegate.png', alt: 'Moneda Cup: panel de delegados para proponer y gestionar partidos', w: 1440, h: 1181 }
+      ]
+    },
+    {
+      id: 'galley-spaceapps',
+      title: 'Galley — NASA Space Apps Challenge 2026',
+      lang: 'PWA + IA + Hardware',
+      date: '14 – 15 nov 2026',
+      dateISO: '2026-11-16',
+      description: 'Copiloto autónomo de salud para astronautas (Team Synera): chequeo de 60 segundos sin internet con reconocimiento facial local, escáner corporal 3D, línea base fisiológica personal (NASA OSDR/DONKI), reglas médicas deterministas (R1–R7) y escalación S-B-A-R para Marte.',
+      note: 'Incluye soporte para sensor ESP32 + MAX30102 vía Web Serial API y demo en vivo offline-first.',
+      tags: ['TypeScript', 'TensorFlow.js', 'NASA APIs', 'ESP32', 'PWA'],
+      link: 'https://github.com/ErickFP7314/synera-spaceapps',
       linkLabel: 'Ver repositorio en GitHub',
-      // Checkpoint 3: portada visual = export ASCII coloreado (iframe escalado,
-      // actúa como imagen). Natural 1490x500 (149 cols x 10px, 25 filas x 20px).
-      visual: 'iframe',
-      iframe: { src: 'assets/harnes-portada.html', title: 'Portada Harnes ErickFP', natW: 1490, natH: 500 }
+      linkType: 'github',
+      images: [
+        { src: 'assets/img/galley-checkin.webp', alt: 'Galley: pantalla de check-in con reconocimiento facial local', w: 1440, h: 900 },
+        { src: 'assets/img/galley-scan-3d.png', alt: 'Galley: escáner corporal 3D con alertas fisiológicas por zona', w: 1440, h: 900 },
+        { src: 'assets/img/galley-mars-link.webp', alt: 'Galley: enlace con Tierra en modo Marte (44 min) y reporte S-B-A-R', w: 1200, h: 588 }
+      ]
     }
   ];
 
@@ -366,6 +387,18 @@ window.PF = window.PF || {};
       kindLabel: 'DISTINCIÓN',
       description: 'Decreto Departamental Nº 539/2023 que reconoce y felicita públicamente su trayectoria en olimpiadas de Informática: Medalla de Oro (2021) y Primer Lugar (2022 y 2023).',
       image: { src: 'assets/img/certs/decreto-reconocimiento-potosi-2023.png', alt: 'Decreto Departamental Nº 539/2023 de reconocimiento del Gobierno de Potosí', w: 601, h: 850 }
+    },
+    {
+      id: 'nasa-space-apps-2026',
+      title: 'Galactic Problem Solver — NASA Space Apps Challenge 2026',
+      issuer: 'NASA Space Apps Challenge · Team Synera',
+      date: '14 – 15 nov 2026',
+      dateISO: '2026-11-15',
+      kindLabel: 'RECONOCIMIENTO',
+      description: 'Certificado oficial otorgado por la NASA Space Apps Challenge 2026 por participación destacada desarrollando Galley, copiloto autónomo de monitoreo de salud para astronautas.',
+      image: { src: 'assets/img/certs/nasa-space-apps-2026.png', alt: 'Certificado Galactic Problem Solver del NASA Space Apps Challenge 2026', w: 1650, h: 1275 },
+      link: 'https://github.com/ErickFP7314/synera-spaceapps',
+      linkLabel: 'Ver proyecto en GitHub'
     }
     // Checkpoint 5: la hackatón GDG La Paz se retiró de LOGROS (EcoAlerta
     // conserva su mención de GDG en PROYECTOS).
@@ -413,7 +446,7 @@ window.PF = window.PF || {};
     location: contact.location,
     github: contact.github,
     linkedin: contact.linkedin,
-    profileImg: { src: 'assets/img/perfil.png', alt: 'Portrait of Erick Luis Flores Paz', w: 720, h: 1280 }
+    profileImg: { src: 'assets/img/perfil.jpg', alt: 'Portrait of Erick Luis Flores Paz', w: 720, h: 720 }
   };
 
   var socials3dEn = [
@@ -517,17 +550,40 @@ window.PF = window.PF || {};
       visual: 'stats'
     },
     {
-      id: 'harnes-erickfp',
-      title: 'harnes-erickfp',
-      lang: 'Dev Tool',
-      date: '2025',
-      dateISO: '2025-08-01',
-      description: 'CLI harness for AI agents with a mandatory human-approval gate, designed for safe AI-assisted development workflows.',
-      stats: ['Mandatory human-approval gate', '126 tests · 95% coverage', 'CLI orchestration for AI agents'],
-      link: projects[5].link,
+      id: 'moneda-cup',
+      title: 'Moneda Cup — Live Futsal Tournament Platform',
+      lang: 'Freelance Full-Stack',
+      date: 'Sep 26 – Nov 15, 2026',
+      dateISO: '2026-11-15',
+      description: 'Shipped end-to-end product built as a freelance full-stack developer for a local futsal tournament organizing team in Potosí. Features live WebSocket scoreboards, standings, admin console, team delegate portal, and a Workers AI assistant.',
+      note: '24/7 serverless architecture on Cloudflare (React 19, TypeScript, Hono, D1, Durable Objects) with Vitest/Playwright CI/CD at $0/mo.',
+      tags: ['React 19', 'TypeScript', 'Hono', 'Cloudflare Workers', 'D1', 'WebSockets'],
+      link: 'https://moneda-cup.pages.dev/',
+      linkLabel: 'Visit live site',
+      linkType: 'web',
+      images: [
+        { src: 'assets/img/moneda-cup-live.png', alt: 'Moneda Cup: live scoreboard and upcoming matches in dark mode', w: 1440, h: 960 },
+        { src: 'assets/img/moneda-cup-console.png', alt: 'Moneda Cup: organizer committee admin console', w: 1440, h: 972 },
+        { src: 'assets/img/moneda-cup-delegate.png', alt: 'Moneda Cup: team delegate match proposal dashboard', w: 1440, h: 1181 }
+      ]
+    },
+    {
+      id: 'galley-spaceapps',
+      title: 'Galley — NASA Space Apps Challenge 2026',
+      lang: 'PWA + AI + Hardware',
+      date: 'Nov 14 – 15, 2026',
+      dateISO: '2026-11-16',
+      description: 'Autonomous astronaut health copilot (Team Synera): 60-second offline-first check-up with local face recognition, 3D body scanner, personal physiological baselines (NASA OSDR/DONKI), deterministic medical rules (R1–R7), and Mars S-B-A-R escalation.',
+      note: 'Supports optional ESP32 + MAX30102 biometric sensors via Web Serial API and works fully offline.',
+      tags: ['TypeScript', 'TensorFlow.js', 'NASA APIs', 'ESP32', 'PWA'],
+      link: 'https://github.com/ErickFP7314/synera-spaceapps',
       linkLabel: 'View repository on GitHub',
-      visual: 'iframe',
-      iframe: { src: 'assets/harnes-portada.html', title: 'Harnes ErickFP Cover', natW: 1490, natH: 500 }
+      linkType: 'github',
+      images: [
+        { src: 'assets/img/galley-checkin.webp', alt: 'Galley: check-in screen with local face recognition', w: 1440, h: 900 },
+        { src: 'assets/img/galley-scan-3d.png', alt: 'Galley: 3D body scanner with per-zone physiological alerts', w: 1440, h: 900 },
+        { src: 'assets/img/galley-mars-link.webp', alt: 'Galley: Mars Earth-link mode (44-minute delay) and queued S-B-A-R report', w: 1200, h: 588 }
+      ]
     }
   ];
 
@@ -687,6 +743,18 @@ window.PF = window.PF || {};
       kindLabel: 'DISTINCTION',
       description: 'Departmental Decree No. 539/2023 publicly recognizing his track record in Informatics Olympiads: Gold Medal (2021) and First Place (2022 & 2023).',
       image: { src: 'assets/img/certs/decreto-reconocimiento-potosi-2023.png', alt: 'Departmental Decree No. 539/2023 from the Government of Potosí', w: 601, h: 850 }
+    },
+    {
+      id: 'nasa-space-apps-2026',
+      title: 'Galactic Problem Solver — NASA Space Apps Challenge 2026',
+      issuer: 'NASA Space Apps Challenge · Team Synera',
+      date: 'Nov 14 – 15, 2026',
+      dateISO: '2026-11-15',
+      kindLabel: 'RECOGNITION',
+      description: 'Official certificate awarded by the 2026 NASA Space Apps Challenge for outstanding participation building Galley, an autonomous astronaut health monitoring copilot.',
+      image: { src: 'assets/img/certs/nasa-space-apps-2026.png', alt: '2026 NASA Space Apps Challenge Galactic Problem Solver Certificate', w: 1650, h: 1275 },
+      link: 'https://github.com/ErickFP7314/synera-spaceapps',
+      linkLabel: 'View project on GitHub'
     }
   ];
 

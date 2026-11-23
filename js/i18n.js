@@ -20,7 +20,7 @@ window.PF = window.PF || {};
       'meta.index.title': 'Erick Luis Flores Paz — Portfolio',
       'meta.index.desc': 'Portfolio terminal-hacker de Erick Luis Flores Paz: perfil, tecnologías, logros, proyectos personales y formación.',
       'meta.proyectos.title': 'Proyectos — Erick Luis Flores Paz',
-      'meta.proyectos.desc': 'Proyectos personales de Erick Luis Flores Paz: Tetris, Tic-Tac-Toe, verificador de billetes y EcoAlerta Bolivia.',
+      'meta.proyectos.desc': 'Proyectos de Erick Luis Flores Paz: Moneda Cup (freelance full-stack), Galley (NASA Space Apps 2026), EcoAlerta Bolivia y Verificador de Billetes.',
       'meta.formacion.title': 'Formación — Erick Luis Flores Paz',
       'meta.formacion.desc': 'Formación de Erick Luis Flores Paz: certificados ICPC-UMSS, Claude Code (Anthropic) y cursos de programación e IA.',
       'meta.logros.title': 'Logros — Erick Luis Flores Paz',
@@ -70,7 +70,7 @@ window.PF = window.PF || {};
       'proyectos.posterAria': 'Entrar a la sección Proyectos',
       'proyectos.kicker': '04 · PROYECTOS',
       'proyectos.title': 'Proyectos',
-      'proyectos.sub': 'Tetris · Tic-Tac-Toe · Billetes · EcoAlerta',
+      'proyectos.sub': 'Moneda Cup · Galley (NASA) · EcoAlerta · Billetes',
       'proyectos.mobilePlayAria': 'Jugar Blocks 3D',
 
       // Section 05: Formación
@@ -204,7 +204,7 @@ window.PF = window.PF || {};
       'meta.index.title': 'Erick Luis Flores Paz — Portfolio',
       'meta.index.desc': 'Terminal-hacker portfolio of Erick Luis Flores Paz: profile, technologies, achievements, personal projects, and education.',
       'meta.proyectos.title': 'Projects — Erick Luis Flores Paz',
-      'meta.proyectos.desc': 'Personal projects by Erick Luis Flores Paz: Tetris, Tic-Tac-Toe, Bolivian banknote verifier, and EcoAlerta Bolivia.',
+      'meta.proyectos.desc': 'Projects by Erick Luis Flores Paz: Moneda Cup (freelance full-stack), Galley (NASA Space Apps 2026), EcoAlerta Bolivia, and Banknote Verifier.',
       'meta.formacion.title': 'Education — Erick Luis Flores Paz',
       'meta.formacion.desc': 'Education & certifications of Erick Luis Flores Paz: ICPC-UMSS, Claude Code (Anthropic), and programming & AI courses.',
       'meta.logros.title': 'Achievements — Erick Luis Flores Paz',
@@ -254,7 +254,7 @@ window.PF = window.PF || {};
       'proyectos.posterAria': 'Enter the Projects section',
       'proyectos.kicker': '04 · PROJECTS',
       'proyectos.title': 'Projects',
-      'proyectos.sub': 'Tetris · Tic-Tac-Toe · Banknotes · EcoAlerta',
+      'proyectos.sub': 'Moneda Cup · Galley (NASA) · EcoAlerta · Banknotes',
       'proyectos.mobilePlayAria': 'Play Blocks 3D',
 
       // Section 05: Formación
@@ -415,12 +415,12 @@ window.PF = window.PF || {};
   }
 
   function updateToggleButtons() {
-    document.querySelectorAll('.lang-toggle').forEach(function (btn) {
-      btn.setAttribute('aria-label', t('lang.switchAria'));
-      btn.setAttribute('data-lang', currentLang);
-      btn.querySelectorAll('[data-lang-opt]').forEach(function (opt) {
-        var isCurrent = opt.getAttribute('data-lang-opt') === currentLang;
-        opt.classList.toggle('is-active', isCurrent);
+    document.querySelectorAll('.lang-toggle').forEach(function (group) {
+      group.setAttribute('data-lang', currentLang);
+      group.querySelectorAll('[data-lang-btn]').forEach(function (btn) {
+        var isCurrent = btn.getAttribute('data-lang-btn') === currentLang;
+        btn.classList.toggle('is-active', isCurrent);
+        btn.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
       });
     });
   }
@@ -494,9 +494,10 @@ window.PF = window.PF || {};
   document.addEventListener('DOMContentLoaded', function () {
     syncData();
     applyDOM();
-    document.querySelectorAll('.lang-toggle').forEach(function (btn) {
+    document.querySelectorAll('[data-lang-btn]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        toggle();
+        var next = btn.getAttribute('data-lang-btn');
+        if (next) setLang(next);
       });
     });
   });
