@@ -189,35 +189,41 @@ button {
   box-shadow: 0 0 10px var(--green-glow);
 }
 
-/* ===== Language toggle (ES / EN segmented buttons) ===== */
+/* ===== Language toggle (ES / EN segmented buttons — cyan/celeste accent) ===== */
 .lang-toggle {
   position: fixed;
   top: 20px;
-  right: 76px;
+  right: 128px;
   height: 44px;
-  padding: 4px;
-  z-index: var(--z-chrome);
-  background: rgba(10, 10, 10, 0.92);
-  backdrop-filter: blur(10px);
-  border: 1.5px solid var(--green-pure);
-  border-radius: 8px;
-  box-shadow: 0 0 16px rgba(0, 255, 0, 0.25);
+  padding: 3px;
+  z-index: 595;
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 255, 255, 0.45);
+  border-radius: 6px;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.16);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.lang-toggle:hover {
+  border-color: var(--cyan-pure);
+  box-shadow: 0 0 16px var(--cyan-glow);
 }
 
 .lang-btn {
-  height: 34px;
-  min-width: 40px;
-  padding: 0 10px;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--white);
+  height: 36px;
+  min-width: 38px;
+  padding: 0 9px;
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cyan-soft);
   font-family: 'Fira Code', 'JetBrains Mono', monospace;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 500;
   letter-spacing: 1px;
   cursor: pointer;
   display: inline-flex;
@@ -231,21 +237,23 @@ button {
   border-color: var(--cyan-pure);
   color: var(--cyan-pure);
   background: rgba(0, 255, 255, 0.12);
+  box-shadow: 0 0 10px var(--cyan-glow);
 }
 
 .lang-btn.is-active {
-  background: var(--green-pure);
-  color: #050505;
+  background: rgba(0, 255, 255, 0.22);
+  color: var(--cyan-pure);
   font-weight: 700;
-  border-color: var(--green-pure);
-  box-shadow: 0 0 12px var(--green-glow);
+  border-color: var(--cyan-pure);
+  text-shadow: 0 0 8px var(--cyan-glow);
+  box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.22), 0 0 10px rgba(0, 255, 255, 0.25);
 }
 
 .lang-btn.is-active:hover,
 .lang-btn.is-active:focus-visible {
-  background: var(--green-bright);
-  color: #050505;
-  border-color: var(--green-bright);
+  background: rgba(0, 255, 255, 0.3);
+  color: var(--white);
+  border-color: var(--cyan-bright);
 }
 
 /* ===== Hamburger + overlay menu ===== */

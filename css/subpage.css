@@ -70,7 +70,36 @@ body[data-page] .scroll-container {
 .sub-header .lang-toggle {
   position: static;
   margin-left: auto;
+  margin-right: 54px;
   flex-shrink: 0;
+}
+
+/* On subpages there is no hamburger button, so dock the sound toggle cleanly
+   in the top-right corner aligned with .sub-header, leaving .lang-toggle clear. */
+body[data-page] .sound-toggle {
+  top: 14px;
+  right: 20px;
+}
+
+@media (max-width: 520px) {
+  .sub-header {
+    padding: 14px 12px;
+    gap: 8px;
+  }
+  .sub-header .back-link {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .sub-header .sub-title {
+    font-size: 12.5px;
+    letter-spacing: 1px;
+  }
+  .sub-header .lang-toggle {
+    margin-right: 52px;
+  }
+  body[data-page] .sound-toggle {
+    right: 12px;
+  }
 }
 
 /* ===== Timeline ===== */
