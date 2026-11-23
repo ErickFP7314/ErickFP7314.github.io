@@ -389,7 +389,7 @@ window.PF = window.PF || {};
 
   PF.icons = Object.freeze(svg);
 
-  PF.data = Object.freeze({
+  var dataEs = Object.freeze({
     contact: contact,
     socials: socials,
     socialsPro: socialsPro,
@@ -402,4 +402,316 @@ window.PF = window.PF || {};
     typingSentences: typingSentences,
     asciiArt: asciiArt
   });
+
+  // -----------------------------------------------------------------------
+  // English locale mirror (same structure, frozen).
+  // -----------------------------------------------------------------------
+  var contactEn = {
+    name: contact.name,
+    email: contact.email,
+    phone: contact.phone,
+    location: contact.location,
+    github: contact.github,
+    linkedin: contact.linkedin,
+    profileImg: { src: 'assets/img/perfil.png', alt: 'Portrait of Erick Luis Flores Paz', w: 720, h: 1280 }
+  };
+
+  var socials3dEn = [
+    { name: 'GitHub', url: socGithub.url, ariaLabel: "Erick's GitHub profile", color: socGithub.color, svg: svg.github },
+    { name: 'LinkedIn', url: socLinkedin.url, ariaLabel: "Erick's LinkedIn profile", color: socLinkedin.color, svg: svg.linkedin },
+    { name: 'Gmail', url: socGmail.url, ariaLabel: 'Send an email to Erick via Gmail', color: socGmail.color, svg: svg.gmail },
+    { name: 'WhatsApp', url: socWhatsapp.url, ariaLabel: 'Message Erick on WhatsApp', color: socWhatsapp.color, svg: svg.whatsapp },
+    { name: 'YouTube', url: socYoutube.url, ariaLabel: 'YouTube channel, @ProEFP', color: socYoutube.color, svg: svg.youtube }
+  ];
+
+  var aboutEn = {
+    headline: 'Programmer and Software Engineering student',
+    paragraphs: [
+      'I started programming through informatics olympiads, solving algorithmic problems in C++.',
+      'Today I am a Software Engineering student at Jala University, focused on building solutions for social, environmental, and community challenges.'
+    ],
+    interests: ['Algorithms', 'Quantum Computing', 'Generative AI Agents']
+  };
+
+  var projectsEn = [
+    {
+      id: 'tictactoe',
+      title: 'Tic-Tac-Toe — C++',
+      lang: 'C++',
+      date: 'May 19, 2020',
+      dateISO: '2020-05-19',
+      description: 'Two-player console Tic-Tac-Toe in C++, with turn control and automatic win detection.',
+      note: 'One of my earliest programs: turn management, move validation, and winner detection built from scratch.',
+      tags: ['C++', 'Console'],
+      link: projects[0].link,
+      linkLabel: 'Watch on YouTube',
+      linkType: 'youtube',
+      images: [
+        { src: 'assets/img/tictactoe-consola.png', alt: 'Tic-Tac-Toe running in the console', w: 359, h: 347 },
+        { src: 'assets/img/tictactoe-tablero.png', alt: 'Tic-Tac-Toe board', w: 325, h: 295 }
+      ]
+    },
+    {
+      id: 'tetris',
+      title: 'Tetris — C++ / Allegro',
+      lang: 'C++',
+      date: 'August 3, 2020',
+      dateISO: '2020-08-03',
+      description: 'Classic Tetris implemented in C++ with the Allegro graphics library: pieces, collisions, line clears, and real-time scoring.',
+      note: 'Erick hand-crafted ALL sprites, piece designs, and the game cover art.',
+      tags: ['C++', 'Allegro', 'Games'],
+      link: projects[1].link,
+      linkLabel: 'Watch on YouTube',
+      linkType: 'youtube',
+      images: [
+        { src: 'assets/img/tetris-portada.png', alt: 'Tetris cover art designed by Erick', w: 999, h: 567 },
+        { src: 'assets/img/tetris-gameplay.png', alt: 'Tetris gameplay with custom sprites', w: 464, h: 511 }
+      ]
+    },
+    {
+      id: 'ticket-validation',
+      title: 'Banknote Verifier — Bolivia',
+      lang: 'Flutter',
+      date: '2025',
+      dateISO: '2025-01-01',
+      description: 'Mobile app built with Flutter and Google ML Kit to verify the authenticity of Bolivian banknotes (Series A and B) using real-time OCR.',
+      note: 'Live camera scanning and OCR analysis to distinguish authentic banknotes from counterfeits.',
+      tags: ['Flutter', 'Dart', 'ML Kit'],
+      link: projects[2].link,
+      linkLabel: 'View on GitHub',
+      linkType: 'github',
+      images: [
+        { src: 'assets/img/billetes-escaneo.png', alt: 'Banknote scanning screen', w: 1168, h: 879 },
+        { src: 'assets/img/billetes-resultados.png', alt: 'Banknote analysis results', w: 1125, h: 670 }
+      ]
+    },
+    {
+      id: 'eco-alerta',
+      title: 'EcoAlerta Bolivia',
+      lang: 'Web + AI',
+      date: '2026',
+      dateISO: '2026-01-01',
+      description: 'Web platform combining NASA satellite data (FIRMS) with Google Gemini 2.0 to assess wildfire risk.',
+      note: 'Built for the GDG La Paz hackathon: near real-time hotspot monitoring with AI-powered risk analysis.',
+      tags: ['NASA FIRMS', 'Gemini AI', 'Web'],
+      link: projects[3].link,
+      linkLabel: 'View on GitHub',
+      linkType: 'github',
+      video: {
+        src: 'assets/video/ecoalerta-respaldo.mp4',
+        poster: 'assets/img/ecoalerta-dashboard.png',
+        w: 1754, h: 946,
+        label: 'EcoAlerta Bolivia demo video showing the wildfire hotspot dashboard'
+      }
+    },
+    {
+      id: 'aproximation_ngp',
+      title: 'aproximation_NGP',
+      lang: 'Open Source',
+      date: '2025',
+      dateISO: '2025-03-01',
+      description: 'Astrophysics fork focused on the Gaia DR3 catalog, with precision improvements and an exhaustive test suite.',
+      stats: ['53,082 cataloged stars (Gaia DR3)', '179 automated tests'],
+      link: projects[4].link,
+      linkLabel: 'View repository on GitHub',
+      visual: 'stats'
+    },
+    {
+      id: 'harnes-erickfp',
+      title: 'harnes-erickfp',
+      lang: 'Dev Tool',
+      date: '2025',
+      dateISO: '2025-08-01',
+      description: 'CLI harness for AI agents with a mandatory human-approval gate, designed for safe AI-assisted development workflows.',
+      stats: ['Mandatory human-approval gate', '126 tests · 95% coverage', 'CLI orchestration for AI agents'],
+      link: projects[5].link,
+      linkLabel: 'View repository on GitHub',
+      visual: 'iframe',
+      iframe: { src: 'assets/harnes-portada.html', title: 'Harnes ErickFP Cover', natW: 1490, natH: 500 }
+    }
+  ];
+
+  var formacionEn = [
+    {
+      id: 'curso-multimedia-educacion-uatf',
+      title: 'Multimedia Content Design for Virtual Education',
+      issuer: 'UATF · Postgraduate Directorate',
+      date: 'Sep 7 – 21, 2020',
+      dateISO: '2020-09-07',
+      hours: '100 academic hours',
+      description: 'Image and video editing course for virtual education: Canva, Photoshop, PowerPoint, Camtasia, Filmora, and OBS Studio.',
+      image: { src: 'assets/img/certs/curso-multimedia-educacion-uatf-2020.png', alt: 'Certificate for Multimedia Content Design for Virtual Education (UATF Postgraduate, 2020)', w: 850, h: 601 }
+    },
+    {
+      id: 'curso-programacion-basica-uatf',
+      title: 'Basic Programming Course',
+      issuer: 'UATF · Faculty of Pure Sciences',
+      date: 'May 16 – Jun 3, 2022',
+      dateISO: '2022-05-16',
+      hours: '18 academic hours',
+      description: 'Introductory programming course organized by the Computer Engineering program at UATF.',
+      image: { src: 'assets/img/certs/curso-programacion-basica-uatf-2022.png', alt: 'Certificate for Basic Programming Course (UATF Pure Sciences, 2022)', w: 850, h: 601 }
+    },
+    {
+      id: 'curso-python-uatf',
+      title: 'Python Programming Course',
+      issuer: 'UATF · Faculty of Pure Sciences',
+      date: 'May 4 – 18, 2023',
+      dateISO: '2023-05-04',
+      hours: '12 academic hours',
+      description: 'Python programming course organized by the Computer Engineering program at UATF.',
+      image: { src: 'assets/img/certs/curso-python-uatf-2023.png', alt: 'Certificate for Python Programming Course (UATF Pure Sciences, 2023)', w: 850, h: 601 }
+    },
+    {
+      id: 'taller-competitiva',
+      title: 'Competitive Programming Workshop — ICPC-UMSS Specialist Module',
+      issuer: 'ICPC · UMSS',
+      date: 'Jun 14 – Jul 19, 2025',
+      dateISO: '2025-06-14',
+      hours: '24 hours',
+      description: 'Specialist competitive programming module focused on advanced problem-solving techniques.',
+      image: { src: 'assets/img/cert-taller-competitiva-2025.png', alt: 'Certificate for ICPC-UMSS Competitive Programming Workshop 2025', w: 800, h: 1083 }
+    },
+    {
+      id: 'campamento-icpc',
+      title: 'ICPC-UMSS 2025 International Training Camp',
+      issuer: 'ICPC · UMSS',
+      date: 'Jul 21 – 25, 2025',
+      dateISO: '2025-07-21',
+      hours: '40 hours',
+      description: 'Intensive international ICPC training camp focused on advanced algorithms and data structures.',
+      image: { src: 'assets/img/cert-icpc-campamento-2025.png', alt: 'Certificate for ICPC-UMSS 2025 International Training Camp', w: 800, h: 1025 }
+    },
+    {
+      id: 'curso-intro-ia-platzi',
+      title: 'Introduction to Artificial Intelligence',
+      issuer: 'Platzi',
+      date: 'Mar 25, 2026',
+      dateISO: '2026-03-25',
+      hours: '4 hours',
+      description: 'Online Platzi course covering theoretical and practical foundations of Artificial Intelligence.',
+      image: { src: 'assets/img/certs/curso-intro-ia-platzi-2026.png', alt: 'Certificate for Introduction to Artificial Intelligence (Platzi, 2026)', w: 850, h: 601 }
+    },
+    {
+      id: 'claude-code',
+      title: 'Claude Code in Action',
+      issuer: 'Anthropic Academy',
+      date: 'Jun 13, 2026',
+      dateISO: '2026-06-13',
+      description: 'Anthropic Academy course on agent-assisted software development with Claude Code.',
+      image: { src: 'assets/img/cert-claude-code-anthropic.png', alt: 'Anthropic Academy Claude Code in Action Certificate', w: 1280, h: 684 }
+    }
+  ];
+
+  var logrosEn = [
+    {
+      id: 'medalla-oro-obi',
+      title: 'Gold Medal — 2020 Bolivian Informatics Olympiad',
+      issuer: 'Bolivian Plurinational Student Science Olympiad (National)',
+      date: '2020',
+      dateISO: '2020-11-01',
+      kindLabel: 'GOLD MEDAL',
+      gold: true,
+      description: 'National Gold Medal in Informatics at the Bolivian Olympiad, solving algorithmic problems in C++.',
+      image: { src: 'assets/img/medallero-2020.png', alt: '2020 Bolivian Informatics Olympiad medalists ceremony', w: 1600, h: 1335 },
+      link: logros[0].link,
+      linkLabel: 'View post',
+      linkIcon: 'facebook'
+    },
+    {
+      id: 'medalla-plata-nacional-informatica-2020',
+      title: 'Silver Medal — Informatics (Level 2)',
+      issuer: 'UMSA · Bolivian Science Olympiad',
+      date: 'Mar 2021',
+      dateISO: '2021-03-31',
+      kindLabel: 'AWARD',
+      description: 'National Silver Medal in Informatics, Level 2 Category, at the 2020 Bolivian Science Olympiad.',
+      image: { src: 'assets/img/certs/medalla-plata-nacional-informatica-2020.png', alt: 'Silver Medal Certificate in Informatics Level 2, 2020 Bolivian Science Olympiad', w: 850, h: 601 }
+    },
+    {
+      id: 'oro-departamental-informatica-2022',
+      title: 'Departmental Gold — Informatics (Level 3)',
+      issuer: 'Departmental Education Directorate of Potosí',
+      date: 'Feb 2022',
+      dateISO: '2022-02-01',
+      kindLabel: 'AWARD',
+      description: 'Gold Medal in the Potosí departmental stage of the 10th Bolivian Plurinational Student Science Olympiad, Informatics Level 3.',
+      image: { src: 'assets/img/certs/oro-departamental-informatica-2022.png', alt: 'Departmental Gold Certificate in Informatics Level 3, 2022 Olympiad', w: 850, h: 601 }
+    },
+    {
+      id: 'segundo-lugar-icpc-nacional-2022',
+      title: 'Second Place — National ICPC Programming Contest',
+      issuer: 'UATF · Systems Engineering · ICPC',
+      date: 'Oct 8, 2022',
+      dateISO: '2022-10-08',
+      kindLabel: 'AWARD',
+      description: 'Second place in the National ICPC Programming Contest hosted by the Systems Engineering program at UATF.',
+      image: { src: 'assets/img/certs/segundo-lugar-icpc-nacional-2022.png', alt: 'Second Place Certificate at the 2022 National ICPC Programming Contest', w: 850, h: 601 }
+    },
+    {
+      id: 'primer-lugar-intercolegial-uatf-2023',
+      title: 'First Place — Inter-School Programming Competition (Level 3)',
+      issuer: 'UATF · Computer Engineering',
+      date: 'Sep 2023',
+      dateISO: '2023-09-01',
+      kindLabel: 'AWARD',
+      description: 'First place in Level 3 of the Inter-School Programming Competition organized by the Computer Engineering program at UATF.',
+      image: { src: 'assets/img/certs/primer-lugar-intercolegial-uatf-2023.png', alt: 'First Place Certificate at the 2023 UATF Inter-School Programming Competition', w: 850, h: 601 }
+    },
+    {
+      id: 'reconocimiento-asamblea-potosi-2023',
+      title: 'Recognition — 1st Place Departmental Stage (Informatics L3)',
+      issuer: 'Departmental Legislative Assembly of Potosí',
+      date: 'Nov 2023',
+      dateISO: '2023-11-01',
+      kindLabel: 'RECOGNITION',
+      description: 'Recognition from the Departmental Legislative Assembly of Potosí for First Place in the departmental stage of the Science Olympiad, Informatics Level 3.',
+      image: { src: 'assets/img/certs/reconocimiento-asamblea-potosi-2023.png', alt: 'Recognition from the Departmental Legislative Assembly of Potosí, 2023', w: 601, h: 850 }
+    },
+    {
+      id: 'reconocimiento-1er-lugar-ddepotosi-2023',
+      title: 'Certificate of Recognition — 1st Place Informatics L3 (12th OCEPB)',
+      issuer: 'Departmental Education Directorate of Potosí',
+      date: 'Nov 2023',
+      dateISO: '2023-11-15',
+      kindLabel: 'RECOGNITION',
+      description: 'Certificate of recognition for First Place in Informatics Level 3 at the Third Departmental Stage of the 12th Bolivian Plurinational Student Science Olympiad.',
+      image: { src: 'assets/img/certs/reconocimiento-1er-lugar-ddepotosi-2023.png', alt: 'Certificate of Recognition for First Place in Informatics Level 3, 12th OCEPB 2023', w: 850, h: 601 }
+    },
+    {
+      id: 'decreto-reconocimiento-potosi-2023',
+      title: 'Departmental Decree of Recognition — Olympiad Track Record',
+      issuer: 'Autonomous Departmental Government of Potosí',
+      date: 'Dec 4, 2023',
+      dateISO: '2023-12-04',
+      kindLabel: 'DISTINCTION',
+      description: 'Departmental Decree No. 539/2023 publicly recognizing his track record in Informatics Olympiads: Gold Medal (2021) and First Place (2022 & 2023).',
+      image: { src: 'assets/img/certs/decreto-reconocimiento-potosi-2023.png', alt: 'Departmental Decree No. 539/2023 from the Government of Potosí', w: 601, h: 850 }
+    }
+  ];
+
+  var typingSentencesEn = [
+    'Clean code always looks like it was written by someone who cares.',
+    'First solve the problem, then write the code.',
+    'Simplicity is the ultimate sophistication.',
+    'A good programmer looks both ways before crossing a one-way street.',
+    'Done is better than perfect.'
+  ];
+
+  var dataEn = Object.freeze({
+    contact: contactEn,
+    socials: socials3dEn,
+    socialsPro: socialsPro,
+    socials3d: socials3dEn,
+    about: aboutEn,
+    technologies: technologies,
+    projects: projectsEn,
+    logros: logrosEn,
+    formacion: formacionEn,
+    typingSentences: typingSentencesEn,
+    asciiArt: asciiArt
+  });
+
+  PF.locales = Object.freeze({ es: dataEs, en: dataEn });
+  PF.data = PF.locales[(PF.i18n && PF.i18n.lang) || 'es'] || dataEs;
 })();

@@ -24,21 +24,25 @@ window.PF = window.PF || {};
 (function () {
   'use strict';
 
+  function t(key) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key) : key;
+  }
+
   var GAME_SLIDES = {
     proyectos: {
       id: 'snake',
-      title: 'SNAKE',
-      hint: 'Flechas o desliza el dedo sobre el tablero · come y crece, no choques con el borde ni contigo mismo.'
+      titleKey: 'games.meta.snake.title',
+      hintKey: 'games.slide.snake.hint'
     },
     formacion: {
       id: 'pong',
-      title: 'PONG',
-      hint: 'Flechas ↑ / ↓ o arrastra la paleta con el dedo · el primero en llegar a 5 puntos gana.'
+      titleKey: 'games.meta.pong.title',
+      hintKey: 'games.slide.pong.hint'
     },
     logros: {
       id: 'diana',
-      title: 'DIANA',
-      hint: 'Arrastra desde el arco y suelta para disparar · sube de nivel sin fallar, la diana se encoge y se mueve.'
+      titleKey: 'games.meta.diana.title',
+      hintKey: 'games.slide.diana.hint'
     }
   };
 
@@ -55,12 +59,23 @@ window.PF = window.PF || {};
     section.setAttribute('data-game', cfg.id);
     section.innerHTML =
       '<div class="game-slide-inner">' +
-      '<p class="game-slide-kicker mono">// mini-juego</p>' +
-      '<h2 class="game-slide-title mono">' + cfg.title + '</h2>' +
-      '<p class="game-slide-hint mono">' + cfg.hint + '</p>' +
+      '<p class="game-slide-kicker mono">' + t('sub.miniGameKicker') + '</p>' +
+      '<h2 class="game-slide-title mono">' + t(cfg.titleKey) + '</h2>' +
+      '<p class="game-slide-hint mono">' + t(cfg.hintKey) + '</p>' +
       '<div class="game-slide-mount" data-mount tabindex="-1"></div>' +
       '</div>';
     container.appendChild(section);
+
+    if (PF.i18n && PF.i18n.onChange) {
+      PF.i18n.onChange(function () {
+        var kicker = section.querySelector('.game-slide-kicker');
+        var title = section.querySelector('.game-slide-title');
+        var hint = section.querySelector('.game-slide-hint');
+        if (kicker) kicker.textContent = t('sub.miniGameKicker');
+        if (title) title.textContent = t(cfg.titleKey);
+        if (hint) hint.textContent = t(cfg.hintKey);
+      });
+    }
 
     var mount = section.querySelector('[data-mount]');
     var started = false;

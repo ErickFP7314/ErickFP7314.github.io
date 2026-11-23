@@ -88,8 +88,12 @@ PF.games = PF.games || {};
     hideOverlay();
   }
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function updateHud() {
-    if (hud) hud.textContent = 'NIVEL ' + level + '  ·  FLECHAS: ' + arrowsLeft + '  ·  PUNTAJE: ' + totalScore;
+    if (hud) hud.textContent = t('diana.hud', { level: level, arrows: arrowsLeft, score: totalScore });
   }
 
   function showOverlay() {
@@ -101,9 +105,9 @@ PF.games = PF.games || {};
     if (ctx) draw();
     overlay.innerHTML =
       '<div class="pf-game-over mono">' +
-      '<p>Ronda terminada — Nivel ' + level + '</p>' +
-      '<p class="pf-game-score">Puntaje total: ' + totalScore + '</p>' +
-      '<button type="button" class="pf-game-retry mono">Reintentar</button>' +
+      '<p>' + t('diana.roundOver', { level: level }) + '</p>' +
+      '<p class="pf-game-score">' + t('diana.totalScore', { score: totalScore }) + '</p>' +
+      '<button type="button" class="pf-game-retry mono">' + t('game.retry') + '</button>' +
       '</div>';
     overlay.classList.add('visible');
     var btn = overlay.querySelector('.pf-game-retry');
@@ -209,7 +213,7 @@ PF.games = PF.games || {};
       totalScore = Math.max(0, totalScore - MISS_PENALTY);
       streak = 0;
       level = Math.max(1, level - 1);
-      lastResult = '¡Tiempo! −' + MISS_PENALTY;
+      lastResult = t('diana.timePenalty', { penalty: MISS_PENALTY });
       sfx('miss');
       aim = { x: ANCHOR.x, y: ANCHOR.y };
       updateHud();
@@ -247,7 +251,7 @@ PF.games = PF.games || {};
         streak++;
         // Every 2 consecutive scoring hits, difficulty ramps up one notch.
         if (streak % 2 === 0) level = Math.min(LEVEL_MAX, level + 1);
-        lastResult = ringScore === 10 ? '¡Diana!' : '+' + ringScore;
+        lastResult = ringScore === 10 ? t('diana.bullseye') : '+' + ringScore;
         sfx(ringScore === 10 ? 'bullseye' : 'hit');
       } else {
         // Hit the outer (0-point) ring: no penalty, but breaks the streak.
@@ -558,7 +562,7 @@ PF.games = PF.games || {};
     var s = 0;
     for (var i = 0; i < RINGS.length; i++) if (dist <= RINGS[i].r) s = RINGS[i].score;
     total += s;
-    lastResult = s === 10 ? '¡Diana!' : s > 0 ? '+' + s : 'Fallo';
+    lastResult = s === 10 ? t('diana.bullseye') : s > 0 ? '+' + s : t('diana.miss');
     sfx(s === 10 ? 'bullseye' : s > 0 ? 'hit' : 'miss');
     if (arrowsLeft <= 0) {
       running = false;

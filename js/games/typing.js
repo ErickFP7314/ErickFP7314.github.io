@@ -142,6 +142,10 @@ PF.games = PF.games || {};
 
   // ---- SELECT screen ------------------------------------------------------
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function showSelect() {
     detachInput();
     stopTimer();
@@ -151,7 +155,7 @@ PF.games = PF.games || {};
 
     var wrap = document.createElement('div');
     wrap.className = 'pf-typing-select';
-    wrap.innerHTML = '<p class="pf-typing-select-title mono">// elige un lenguaje para tipear</p>';
+    wrap.innerHTML = '<p class="pf-typing-select-title mono">' + t('typing.selectTitle') + '</p>';
 
     var grid = document.createElement('div');
     grid.className = 'pf-typing-langs';
@@ -161,7 +165,7 @@ PF.games = PF.games || {};
       btn.type = 'button';
       btn.className = 'pf-typing-lang-btn mono';
       btn.style.setProperty('--brand', l.color);
-      btn.setAttribute('aria-label', 'Tipear en ' + l.name);
+      btn.setAttribute('aria-label', t('typing.typeIn', { name: l.name }));
       btn.innerHTML =
         '<img class="pf-typing-lang-icon" src="' + l.icon + '" alt="" width="30" height="30" loading="lazy" decoding="async" />' +
         '<span>' + l.name + '</span>';
@@ -198,7 +202,7 @@ PF.games = PF.games || {};
     hud.className = 'pf-game-hud pf-typing-hud mono';
     hud.innerHTML =
       '<span class="pf-typing-hud-lang">// ' + lang.name + '</span>' +
-      '<span class="pf-typing-hud-metrics"><span class="pf-typing-wpm">0</span> PPM · ' +
+      '<span class="pf-typing-hud-metrics"><span class="pf-typing-wpm">0</span> ' + t('typing.unit') + ' · ' +
       '<span class="pf-typing-time">0</span>s</span>';
 
     var box = document.createElement('div');
@@ -210,7 +214,7 @@ PF.games = PF.games || {};
     input = document.createElement('input');
     input.type = 'text';
     input.className = 'pf-typing-input';
-    input.setAttribute('aria-label', 'Escribe el código mostrado. Espacio, Enter y Tab cuentan como caracteres.');
+    input.setAttribute('aria-label', t('typing.inputAria'));
     input.autocomplete = 'off';
     input.autocapitalize = 'off';
     input.autocorrect = 'off';
@@ -381,7 +385,7 @@ PF.games = PF.games || {};
     var retry = document.createElement('button');
     retry.type = 'button';
     retry.className = 'pf-game-retry mono';
-    retry.innerHTML = '<span class="pf-typing-btn-icon" aria-hidden="true">' + PLAY_SVG + '</span><span>Reintentar</span>';
+    retry.innerHTML = '<span class="pf-typing-btn-icon" aria-hidden="true">' + PLAY_SVG + '</span><span>' + t('game.retry') + '</span>';
     retry.addEventListener('click', function () {
       var idx = LANGS.indexOf(lang);
       startRound(idx < 0 ? 0 : idx);
@@ -390,7 +394,7 @@ PF.games = PF.games || {};
     var change = document.createElement('button');
     change.type = 'button';
     change.className = 'pf-typing-change mono';
-    change.textContent = 'Cambiar lenguaje';
+    change.textContent = t('typing.changeLang');
     change.addEventListener('click', showSelect);
 
     actions.appendChild(retry);
@@ -411,10 +415,10 @@ PF.games = PF.games || {};
     var grid = document.createElement('div');
     grid.className = 'pf-typing-stat-grid';
     grid.innerHTML =
-      statCell(wpm, 'PPM', 'is-wpm') +
-      statCell(accuracy + '%', 'precisión', 'is-acc') +
-      statCell(errors, 'errores', 'is-err') +
-      statCell(elapsed.toFixed(1) + 's', 'tiempo', 'is-time');
+      statCell(wpm, t('typing.unit'), 'is-wpm') +
+      statCell(accuracy + '%', t('typing.accuracy'), 'is-acc') +
+      statCell(errors, t('typing.errors'), 'is-err') +
+      statCell(elapsed.toFixed(1) + 's', t('typing.time'), 'is-time');
     return grid;
   }
 
@@ -426,7 +430,7 @@ PF.games = PF.games || {};
 
     var caption = document.createElement('p');
     caption.className = 'pf-typing-graph-cap mono';
-    caption.textContent = '// velocidad (PPM) por segundo';
+    caption.textContent = t('typing.graphCap');
     wrap.appendChild(caption);
 
     var W = 300, H = 120, padL = 8, padR = 8, padT = 12, padB = 18;
@@ -445,7 +449,7 @@ PF.games = PF.games || {};
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     svg.setAttribute('class', 'pf-typing-graph');
     svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', 'Gráfico de velocidad de tipeo en palabras por minuto a lo largo del tiempo');
+    svg.setAttribute('aria-label', t('typing.graphAria'));
 
     // baseline
     var base = document.createElementNS(svgNS, 'line');
@@ -487,11 +491,11 @@ PF.games = PF.games || {};
         dot.setAttribute('class', 'pf-graph-dot');
         dot.setAttribute('tabindex', '0');
         dot.setAttribute('role', 'img');
-        dot.setAttribute('aria-label', p.wpm + ' PPM al segundo ' + p.t);
+        dot.setAttribute('aria-label', t('typing.dotAria', { wpm: p.wpm, t: p.t }));
         function show() {
           tip.setAttribute('x', Math.max(padL + 14, Math.min(W - padR - 14, cx)));
           tip.setAttribute('y', Math.max(10, cy - 8));
-          tip.textContent = p.wpm + ' PPM';
+          tip.textContent = p.wpm + ' ' + t('typing.unit');
           dot.classList.add('is-active');
         }
         function hide() { tip.textContent = ''; dot.classList.remove('is-active'); }
@@ -554,6 +558,12 @@ PF.games = PF.games || {};
     hudTime = null;
     panel = null;
     mount = null;
+  }
+
+  if (PF.i18n && PF.i18n.onChange) {
+    PF.i18n.onChange(function () {
+      if (panel && screen === 'select') showSelect();
+    });
   }
 
   PF.games.typing = { init: init, start: start, stop: stop };

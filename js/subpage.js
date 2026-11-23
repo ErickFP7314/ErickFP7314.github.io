@@ -33,10 +33,69 @@ window.PF = window.PF || {};
 
   document.addEventListener('DOMContentLoaded', init);
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function esc(str) {
     var d = document.createElement('div');
     d.textContent = String(str == null ? '' : str);
     return d.innerHTML;
+  }
+
+  var activeObserver = null;
+
+  function renderSubpageItems(cfg, isRerender) {
+    var items = (PF.data[cfg.data] || []).slice().sort(function (a, b) {
+      return (a.dateISO || '').localeCompare(b.dateISO || '');
+    });
+
+    var container = document.getElementById('scrollContainer');
+    if (!container) return;
+
+    var gameSlide = container.querySelector('.game-slide');
+    if (isRerender) {
+      container.querySelectorAll('.sub-item').forEach(function (el) {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      });
+    } else {
+      container.innerHTML = '';
+    }
+
+    var frag = document.createDocumentFragment();
+    items.forEach(function (it, i) {
+      var sec = document.createElement('section');
+      sec.className = 'sub-item';
+      sec.setAttribute('data-index', String(i));
+      sec.innerHTML = cfg.render(it, i);
+      if (isRerender) {
+        sec.querySelectorAll('.reveal-up').forEach(function (el) { el.classList.add('in-view'); });
+      }
+      frag.appendChild(sec);
+    });
+
+    if (gameSlide && gameSlide.parentNode === container) {
+      container.insertBefore(frag, gameSlide);
+    } else {
+      container.appendChild(frag);
+    }
+
+    if (isRerender) {
+      var railDates = document.querySelectorAll('.rail-node-date');
+      railDates.forEach(function (lbl, i) {
+        if (items[i]) lbl.textContent = items[i].date || '';
+      });
+      container.querySelectorAll('.item-media img').forEach(function (im) {
+        im.classList.add('pf-lb-trigger');
+      });
+    } else {
+      buildRailNodes(items);
+    }
+
+    if (activeObserver) activeObserver.disconnect();
+    activeObserver = setupObserver(items.length);
+    scaleIframeCovers();
+    initCarousels();
   }
 
   function init() {
@@ -48,24 +107,12 @@ window.PF = window.PF || {};
     var back = document.querySelector('.back-link');
     if (back) back.setAttribute('href', 'index.html#' + cfg.anchor);
 
-    var items = (PF.data[cfg.data] || []).slice().sort(function (a, b) {
-      return (a.dateISO || '').localeCompare(b.dateISO || '');
-    });
-
-    var container = document.getElementById('scrollContainer');
-    if (!container) return;
-    container.innerHTML = items.map(function (it, i) {
-      return (
-        '<section class="sub-item" data-index="' + i + '">' +
-        cfg.render(it, i) +
-        '</section>'
-      );
-    }).join('');
-
-    buildRailNodes(items);
-    setupObserver(items.length);
-    scaleIframeCovers();
-    initCarousels();
+    renderSubpageItems(cfg, false);
+    if (PF.i18n && PF.i18n.onChange) {
+      PF.i18n.onChange(function () {
+        renderSubpageItems(cfg, true);
+      });
+    }
     dismissLoading();
   }
 
@@ -118,14 +165,14 @@ window.PF = window.PF || {};
     }).join('');
     var dots = images.map(function (im, i) {
       return '<button type="button" class="carousel-dot' + (i === 0 ? ' is-active' : '') +
-        '" data-goto="' + i + '" aria-label="Ir a la imagen ' + (i + 1) + '"' +
+        '" data-goto="' + i + '" aria-label="' + esc(t('sub.carouselGoto', { n: i + 1 })) + '"' +
         (i === 0 ? ' aria-current="true"' : '') + '></button>';
     }).join('');
     return (
       '<div class="item-media item-carousel" data-count="' + images.length + '">' +
       '<div class="carousel-track">' + slides + '</div>' +
-      '<button type="button" class="carousel-btn carousel-prev" aria-label="Imagen anterior">' + CHEVRON_LEFT + '</button>' +
-      '<button type="button" class="carousel-btn carousel-next" aria-label="Imagen siguiente">' + CHEVRON_RIGHT + '</button>' +
+      '<button type="button" class="carousel-btn carousel-prev" aria-label="' + esc(t('sub.carouselPrev')) + '">' + CHEVRON_LEFT + '</button>' +
+      '<button type="button" class="carousel-btn carousel-next" aria-label="' + esc(t('sub.carouselNext')) + '">' + CHEVRON_RIGHT + '</button>' +
       '<div class="carousel-meta">' +
       '<span class="carousel-count mono" aria-live="polite">1 / ' + images.length + '</span>' +
       '<div class="carousel-dots">' + dots + '</div>' +
@@ -193,7 +240,7 @@ window.PF = window.PF || {};
     var body =
       '<div class="item-body">' +
       '<span class="item-date mono">' + esc(p.date) + '</span>' +
-      '<div class="item-kind">PROYECTO · ' + esc(p.lang) + '</div>' +
+      '<div class="item-kind">' + esc(t('sub.projectKind')) + ' · ' + esc(p.lang) + '</div>' +
       '<h2 class="item-title">' + esc(p.title) + '</h2>' +
       '<p class="item-desc">' + esc(p.description) + '</p>' +
       (p.note ? '<p class="item-note">' + esc(p.note) + '</p>' : '') +
@@ -218,12 +265,12 @@ window.PF = window.PF || {};
         ? '<span class="item-link-icon" aria-hidden="true">' + FACEBOOK_SVG + '</span>'
         : '↗ ';
       linkHtml = '<a class="item-link" href="' + esc(l.link) + '" target="_blank" rel="noopener noreferrer">' +
-        iconHtml + esc(l.linkLabel || 'Ver más') + '</a>';
+        iconHtml + esc(l.linkLabel || t('sub.viewMore')) + '</a>';
     }
     var body =
       '<div class="item-body">' +
       '<span class="item-date mono">' + esc(l.date) + '</span>' +
-      '<div class="item-kind">' + esc(l.kindLabel || 'RECONOCIMIENTO') + '</div>' +
+      '<div class="item-kind">' + esc(l.kindLabel || t('sub.recogKind')) + '</div>' +
       '<h2 class="item-title">' + esc(l.title) + '</h2>' +
       (meta.length ? '<p class="item-meta">' + esc(meta.join(' · ')) + '</p>' : '') +
       '<p class="item-desc">' + esc(l.description) + '</p>' +
@@ -238,7 +285,7 @@ window.PF = window.PF || {};
           '<img src="' + esc(l.image.src) + '" width="' + l.image.w + '" height="' + l.image.h +
           '" loading="lazy" alt="' + esc(l.image.alt) + '" /></div>';
       } else {
-        media = '<div class="medal-badge" role="img" aria-label="Medalla de Oro nacional">★</div>';
+        media = '<div class="medal-badge" role="img" aria-label="' + esc(t('sub.goldMedalAria')) + '">★</div>';
       }
     } else if (l.image) {
       media = '<div class="item-media cert-frame"><img src="' + esc(l.image.src) + '" width="' + l.image.w +
@@ -260,12 +307,12 @@ window.PF = window.PF || {};
         '<polyline points="0,60 40,52 80,55 120,38 160,42 200,22 240,28 300,10" fill="none" stroke="#00ff00" stroke-width="2"/>' +
         '<polyline points="0,64 40,60 80,58 120,50 160,46 200,40 240,34 300,26" fill="none" stroke="#00ffff" stroke-width="1.5" opacity="0.6"/>' +
         '</svg>';
-      return '<div class="gen-visual" role="img" aria-label="Panel de resultados: 53.082 estrellas Gaia DR3, 179 tests">' +
+      return '<div class="gen-visual" role="img" aria-label="' + esc(t('sub.statsAria')) + '">' +
         '<div class="gen-stats-grid">' +
-        '<div class="gen-stat"><div class="num">53.082</div><div class="lbl">estrellas · Gaia DR3</div></div>' +
-        '<div class="gen-stat"><div class="num">179</div><div class="lbl">tests automatizados</div></div>' +
-        '<div class="gen-stat"><div class="num">DR3</div><div class="lbl">catálogo Gaia</div></div>' +
-        '<div class="gen-stat"><div class="num">100%</div><div class="lbl">tests en verde</div></div>' +
+        '<div class="gen-stat"><div class="num">' + (PF.i18n && PF.i18n.lang === 'en' ? '53,082' : '53.082') + '</div><div class="lbl">' + esc(t('sub.statsStars')) + '</div></div>' +
+        '<div class="gen-stat"><div class="num">179</div><div class="lbl">' + esc(t('sub.statsTests')) + '</div></div>' +
+        '<div class="gen-stat"><div class="num">DR3</div><div class="lbl">' + esc(t('sub.statsCatalog')) + '</div></div>' +
+        '<div class="gen-stat"><div class="num">100%</div><div class="lbl">' + esc(t('sub.statsPassing')) + '</div></div>' +
         '</div>' + curve + '</div>';
     }
     if (e.visual === 'iframe' && e.iframe) {
@@ -279,9 +326,9 @@ window.PF = window.PF || {};
         '</div></div>';
     }
     if (e.visual === 'terminal') {
-      return '<div class="gen-terminal" role="img" aria-label="Salida de terminal de harnes-erickfp">' +
+      return '<div class="gen-terminal" role="img" aria-label="' + esc(t('sub.terminalAria')) + '">' +
         '<div class="tl"><span class="prompt">$</span> harnes run --agent build</div>' +
-        '<div class="tl"><span class="ok">✓</span> plan generado · esperando aprobación humana</div>' +
+        '<div class="tl"><span class="ok">✓</span> ' + esc(t('sub.terminalPlan')) + '</div>' +
         '<div class="tl"><span class="warn">?</span> approve step 3/7 &gt; <span class="ok">yes</span></div>' +
         '<div class="tl"><span class="ok">✓</span> 126 tests passed · 95% coverage</div>' +
         '<div class="tl"><span class="prompt">$</span> <span class="blink-cur"></span></div>' +
@@ -297,14 +344,14 @@ window.PF = window.PF || {};
     var body =
       '<div class="item-body">' +
       '<span class="item-date mono">' + esc(f.date) + '</span>' +
-      '<div class="item-kind">' + (f.gold ? 'RECONOCIMIENTO' : 'CERTIFICADO') + '</div>' +
+      '<div class="item-kind">' + esc(f.gold ? t('sub.recogKind') : t('sub.certKind')) + '</div>' +
       '<h2 class="item-title">' + esc(f.title) + '</h2>' +
       (meta.length ? '<p class="item-meta">' + esc(meta.join(' · ')) + '</p>' : '') +
       '<p class="item-desc">' + esc(f.description) + '</p>' +
       '</div>';
     var media;
     if (f.gold) {
-      media = '<div class="medal-badge" role="img" aria-label="Medalla de Oro nacional">★</div>';
+      media = '<div class="medal-badge" role="img" aria-label="' + esc(t('sub.goldMedalAria')) + '">★</div>';
     } else if (f.image) {
       media = '<div class="item-media cert-frame"><img src="' + esc(f.image.src) + '" width="' + f.image.w +
         '" height="' + f.image.h + '" loading="lazy" alt="' + esc(f.image.alt) + '" /></div>';
@@ -357,6 +404,7 @@ window.PF = window.PF || {};
     }, { threshold: 0.5, rootMargin: '-1px' });
 
     document.querySelectorAll('.sub-item').forEach(function (s) { observer.observe(s); });
+    return observer;
   }
 
   // ---- loading screen ---------------------------------------------------

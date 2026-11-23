@@ -106,7 +106,8 @@ window.PF = window.PF || {};
     dialog.className = 'pf-lb-dialog';
     dialog.setAttribute('role', 'dialog');
     dialog.setAttribute('aria-modal', 'true');
-    dialog.setAttribute('aria-label', alt || 'Imagen ampliada');
+    var t = function (k, fb) { return (PF.i18n && PF.i18n.t) ? PF.i18n.t(k) : fb; };
+    dialog.setAttribute('aria-label', alt || t('lb.dialogAria', 'Imagen ampliada'));
 
     var stage = document.createElement('div');
     stage.className = 'pf-lb-stage';
@@ -120,10 +121,10 @@ window.PF = window.PF || {};
 
     var controls = document.createElement('div');
     controls.className = 'pf-lb-controls';
-    controls.appendChild(makeBtn('pf-lb-zoomin', 'Acercar imagen', 'zoomIn', function () { setScale(scale + STEP); }));
-    controls.appendChild(makeBtn('pf-lb-zoomout', 'Alejar imagen', 'zoomOut', function () { setScale(scale - STEP); }));
-    controls.appendChild(makeBtn('pf-lb-reset', 'Restablecer zoom', 'reset', function () { setScale(1); }));
-    var closeBtn = makeBtn('pf-lb-close', 'Cerrar imagen', 'close', function () { close(); });
+    controls.appendChild(makeBtn('pf-lb-zoomin', t('lb.zoomIn', 'Acercar imagen'), 'zoomIn', function () { setScale(scale + STEP); }));
+    controls.appendChild(makeBtn('pf-lb-zoomout', t('lb.zoomOut', 'Alejar imagen'), 'zoomOut', function () { setScale(scale - STEP); }));
+    controls.appendChild(makeBtn('pf-lb-reset', t('lb.reset', 'Restablecer zoom'), 'reset', function () { setScale(1); }));
+    var closeBtn = makeBtn('pf-lb-close', t('lb.close', 'Cerrar imagen'), 'close', function () { close(); });
     controls.appendChild(closeBtn);
 
     dialog.appendChild(controls);

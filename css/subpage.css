@@ -67,6 +67,12 @@ body[data-page] .scroll-container {
   color: var(--green-pure);
 }
 
+.sub-header .lang-toggle {
+  position: static;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 /* ===== Timeline ===== */
 .timeline-rail {
   position: fixed;

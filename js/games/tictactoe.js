@@ -65,27 +65,29 @@ PF.games = PF.games || {};
   // it on close (contract: stop() must clear all timers).
   var cpuTimer = null;
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function mount(host) {
     if (!host) return;
     host.classList.add('ttt');
     host.innerHTML =
-      '<p class="ttt-status mono" aria-live="polite">Tu turno · eres la <span class="ttt-x">X</span></p>' +
-      '<div class="ttt-board" role="group" aria-label="Tablero de Tres en Raya"></div>' +
-      '<p class="ttt-scores mono">Tú <span data-s="win">0</span> · Empates <span data-s="draw">0</span> · CPU <span data-s="lose">0</span></p>' +
-      '<button type="button" class="ttt-reset mono"><span class="ttt-reset-icon" aria-hidden="true">' + RESET_SVG + '</span><span>Reiniciar</span></button>';
+      '<p class="ttt-status mono" aria-live="polite">' + t('ttt.yourTurnHtml') + '</p>' +
+      '<div class="ttt-board" role="group" aria-label="' + t('ttt.boardAria') + '"></div>' +
+      '<p class="ttt-scores mono">' + t('ttt.scoresHtml', { win: 0, draw: 0, lose: 0 }) + '</p>' +
+      '<button type="button" class="ttt-reset mono"><span class="ttt-reset-icon" aria-hidden="true">' + RESET_SVG + '</span><span class="ttt-reset-text">' + t('ttt.reset') + '</span></button>';
 
     var boardEl = host.querySelector('.ttt-board');
     var statusEl = host.querySelector('.ttt-status');
+    var scoresEl = host.querySelector('.ttt-scores');
     var resetBtn = host.querySelector('.ttt-reset');
-    var scoreEls = {
-      win: host.querySelector('[data-s="win"]'),
-      draw: host.querySelector('[data-s="draw"]'),
-      lose: host.querySelector('[data-s="lose"]')
-    };
+    var resetText = host.querySelector('.ttt-reset-text');
 
     var board = ['', '', '', '', '', '', '', '', ''];
     var locked = false;
     var scores = { win: 0, draw: 0, lose: 0 };
+    var statusKey = 'ttt.yourTurnHtml';
     var cells = [];
 
     for (var i = 0; i < 9; i++) {
@@ -93,10 +95,14 @@ PF.games = PF.games || {};
       btn.type = 'button';
       btn.className = 'ttt-cell';
       btn.setAttribute('data-i', i);
-      btn.setAttribute('aria-label', 'Casilla ' + (i + 1) + ', vacía');
+      btn.setAttribute('aria-label', t('ttt.cellEmpty', { n: i + 1 }));
       btn.addEventListener('click', onCellClick);
       boardEl.appendChild(btn);
       cells.push(btn);
+    }
+
+    function renderScores() {
+      scoresEl.innerHTML = t('ttt.scoresHtml', scores);
     }
 
     function paint() {
@@ -107,11 +113,15 @@ PF.games = PF.games || {};
         if (v === 'X') cells[i].classList.add('is-x');
         else if (v === 'O') cells[i].classList.add('is-o');
         cells[i].disabled = !!v || locked;
-        cells[i].setAttribute('aria-label', 'Casilla ' + (i + 1) + (v ? ', ' + (v === 'X' ? 'tú (X)' : 'CPU (O)') : ', vacía'));
+        var cellKey = v === 'X' ? 'ttt.cellX' : (v === 'O' ? 'ttt.cellO' : 'ttt.cellEmpty');
+        cells[i].setAttribute('aria-label', t(cellKey, { n: i + 1 }));
       }
     }
 
-    function setStatus(html) { statusEl.innerHTML = html; }
+    function setStatusKey(key) {
+      statusKey = key;
+      statusEl.innerHTML = t(key);
+    }
 
     function highlight(line) {
       if (!line) return;
@@ -123,22 +133,20 @@ PF.games = PF.games || {};
       paint();
       if (res.who === 'draw') {
         scores.draw++;
-        setStatus('Empate.');
+        setStatusKey('ttt.draw');
         sfx('draw');
       } else if (res.who === 'X') {
         scores.win++;
-        setStatus('¡Ganaste! <span class="ttt-x">X</span>');
+        setStatusKey('ttt.winHtml');
         highlight(res.line);
         sfx('win');
       } else {
         scores.lose++;
-        setStatus('Ganó la CPU <span class="ttt-o">O</span>');
+        setStatusKey('ttt.loseHtml');
         highlight(res.line);
         sfx('lose');
       }
-      scoreEls.win.textContent = scores.win;
-      scoreEls.draw.textContent = scores.draw;
-      scoreEls.lose.textContent = scores.lose;
+      renderScores();
     }
 
     function cpuTurn() {
@@ -157,7 +165,7 @@ PF.games = PF.games || {};
       var r2 = winner(board);
       if (r2) return finish(r2);
       locked = false;
-      setStatus('Tu turno · eres la <span class="ttt-x">X</span>');
+      setStatusKey('ttt.yourTurnHtml');
       paint();
     }
 
@@ -169,7 +177,7 @@ PF.games = PF.games || {};
       var res = winner(board);
       if (res) { paint(); return finish(res); }
       locked = true;
-      setStatus('CPU pensando…');
+      setStatusKey('ttt.thinking');
       paint();
       if (cpuTimer) clearTimeout(cpuTimer);
       cpuTimer = setTimeout(cpuTurn, 340);
@@ -179,11 +187,23 @@ PF.games = PF.games || {};
       board = ['', '', '', '', '', '', '', '', ''];
       locked = false;
       cells.forEach(function (c) { c.classList.remove('ttt-win'); });
-      setStatus('Tu turno · eres la <span class="ttt-x">X</span>');
+      setStatusKey('ttt.yourTurnHtml');
       paint();
     }
 
     resetBtn.addEventListener('click', reset);
+
+    if (PF.i18n && PF.i18n.onChange) {
+      PF.i18n.onChange(function () {
+        if (!document.body.contains(host)) return;
+        boardEl.setAttribute('aria-label', t('ttt.boardAria'));
+        if (resetText) resetText.textContent = t('ttt.reset');
+        statusEl.innerHTML = t(statusKey);
+        renderScores();
+        paint();
+      });
+    }
+
     paint();
   }
 

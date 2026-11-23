@@ -261,7 +261,7 @@ PF.games = PF.games || {};
   function endGame() {
     running = false;
     sfx('over');
-    if (scoreEl) scoreEl.textContent = 'BLOQUES: ' + score;
+    if (scoreEl) scoreEl.textContent = (PF.i18n && PF.i18n.t) ? PF.i18n.t('blocks.hud', { score: score }) : ('BLOQUES: ' + score);
     if (onOverCb) onOverCb(score);
   }
 
@@ -376,7 +376,7 @@ PF.games = PF.games || {};
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'pf-game-retry mono';
-    btn.textContent = 'Reintentar';
+    btn.textContent = (PF.i18n && PF.i18n.t) ? PF.i18n.t('game.retry') : 'Reintentar';
     btn.addEventListener('click', function () {
       if (modalOverEl && modalOverEl.parentNode) modalOverEl.parentNode.removeChild(modalOverEl);
       modalOverEl = null;

@@ -31,23 +31,42 @@ PF.embed = PF.embed || {};
     return !!(PF.state && PF.state.reducedMotion);
   }
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function attach(cfg) {
     var host = cfg.host;
     var section = cfg.section || null;
     var game = cfg.game;
+    var nameKey = cfg.nameKey || null;
     var name = cfg.name || 'juego';
     if (!host || !game) return null;
+
+    function getName() {
+      return nameKey ? t(nameKey) : name;
+    }
 
     host.classList.add('pf-embed', 'is-idle');
     host.innerHTML =
       '<div class="pf-embed-stage" tabindex="-1"></div>' +
-      '<button type="button" class="pf-embed-cta mono" aria-label="Jugar ' + name + '">' +
+      '<button type="button" class="pf-embed-cta mono" aria-label="' + t('games.playNamed', { name: getName() }) + '">' +
       '<span class="pf-embed-icon" aria-hidden="true">' + PLAY_SVG + '</span>' +
-      '<span>Jugar</span></button>' +
-      '<div class="pf-embed-pause mono" aria-hidden="true"><span>Pausa</span></div>';
+      '<span class="pf-embed-cta-label">' + t('game.play') + '</span></button>' +
+      '<div class="pf-embed-pause mono" aria-hidden="true"><span class="pf-embed-pause-label">' + t('game.paused') + '</span></div>';
 
     var stage = host.querySelector('.pf-embed-stage');
     var cta = host.querySelector('.pf-embed-cta');
+    var ctaLabel = host.querySelector('.pf-embed-cta-label');
+    var pauseLabel = host.querySelector('.pf-embed-pause-label');
+
+    if (PF.i18n && PF.i18n.onChange) {
+      PF.i18n.onChange(function () {
+        if (cta) cta.setAttribute('aria-label', t('games.playNamed', { name: getName() }));
+        if (ctaLabel) ctaLabel.textContent = t('game.play');
+        if (pauseLabel) pauseLabel.textContent = t('game.paused');
+      });
+    }
     var state = 'idle';
     var outsideHandler = null;
     var overTimer = null;

@@ -29,6 +29,10 @@ window.PF = window.PF || {};
 
   document.addEventListener('DOMContentLoaded', init);
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function init() {
     renderHeroLinks();
     renderAbout();
@@ -46,6 +50,13 @@ window.PF = window.PF || {};
     setupObserver();
     setupHamburger();
     setupContactForm();
+    if (PF.i18n && PF.i18n.onChange) {
+      PF.i18n.onChange(function () {
+        renderHeroLinks();
+        renderAbout(true);
+        renderSocials3D();
+      });
+    }
     dismissLoadingScreen();
   }
 
@@ -70,9 +81,9 @@ window.PF = window.PF || {};
     var gh = PF.icons ? PF.icons.github : '';
     var li = PF.icons ? PF.icons.linkedin : '';
     container.innerHTML =
-      '<a class="hero-link mono" href="' + escapeHtml(c.github) + '" target="_blank" rel="noopener noreferrer" aria-label="Perfil de GitHub de Erick">' +
+      '<a class="hero-link mono" href="' + escapeHtml(c.github) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHtml(t('hero.githubAria')) + '">' +
       '<span class="hl-icon" aria-hidden="true">' + gh + '</span><span>GitHub</span></a>' +
-      '<a class="hero-link mono" href="' + escapeHtml(c.linkedin) + '" target="_blank" rel="noopener noreferrer" aria-label="Perfil de LinkedIn de Erick">' +
+      '<a class="hero-link mono" href="' + escapeHtml(c.linkedin) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHtml(t('hero.linkedinAria')) + '">' +
       '<span class="hl-icon" aria-hidden="true">' + li + '</span><span>LinkedIn</span></a>';
     // location pin icon
     var loc = document.querySelector('.location-badge .loc-icon');
@@ -82,21 +93,22 @@ window.PF = window.PF || {};
     if (cvIcon && PF.icons && PF.icons.doc) cvIcon.innerHTML = PF.icons.doc;
   }
 
-  function renderAbout() {
+  function renderAbout(keepVisible) {
     var container = document.querySelector('[data-render="about"]');
     if (!container || !PF.data) return;
+    var wasVisible = keepVisible && !!container.querySelector('.about-card.in-view');
     var a = PF.data.about;
     var paras = a.paragraphs.map(function (p) {
       return '<p>' + escapeHtml(p) + '</p>';
     }).join('');
-    var chips = a.interests.map(function (t) {
-      return '<span class="tag-chip">' + escapeHtml(t) + '</span>';
+    var chips = a.interests.map(function (item) {
+      return '<span class="tag-chip">' + escapeHtml(item) + '</span>';
     }).join('');
     container.innerHTML =
-      '<div class="about-card reveal-up">' +
+      '<div class="about-card reveal-up' + (wasVisible || PF.state.activeSection === 'section2' ? ' in-view' : '') + '">' +
       '<p class="about-lead mono">' + escapeHtml(a.headline) + '</p>' +
       paras +
-      '<div class="tag-row about-interests"><span class="about-interests-label mono">intereses:</span>' + chips + '</div>' +
+      '<div class="tag-row about-interests"><span class="about-interests-label mono">' + escapeHtml(t('about.interestsLabel')) + '</span>' + chips + '</div>' +
       '</div>';
   }
 
@@ -194,7 +206,8 @@ window.PF = window.PF || {};
         host: blocksHost,
         section: document.getElementById('section4'),
         game: PF.games.blocks3d,
-        name: 'Blocks — torre 3D'
+        nameKey: 'games.embedBlocksName',
+        name: t('games.embedBlocksName')
       });
     } else if (blocksHost) {
       blocksHost.classList.add('pf-embed-unavailable');
@@ -231,9 +244,9 @@ window.PF = window.PF || {};
   function setupScramble() {
     var GLYPHS = '$%^&*<>/\\{}[]#@!?01';
     document.querySelectorAll('.scramble[data-scramble]').forEach(function (el) {
-      var target = el.getAttribute('data-scramble');
       var timer = null;
       function run() {
+        var target = el.getAttribute('data-scramble') || el.textContent || '';
         if (PF.state.reducedMotion) return;
         if (timer) clearInterval(timer);
         var frame = 0;
@@ -312,7 +325,7 @@ window.PF = window.PF || {};
       return;
     }
 
-    var bootLines = ['$ booting portfolio...', '$ loading modules... OK', '$ listo.'];
+    var bootLines = ['$ booting portfolio...', '$ loading modules... OK', t('boot.ready')];
     var i = 0;
 
     function printNext() {
@@ -513,8 +526,8 @@ window.PF = window.PF || {};
       var email = form.elements.email ? form.elements.email.value.trim() : '';
       var message = form.elements.message ? form.elements.message.value.trim() : '';
 
-      var subject = encodeURIComponent('Contacto desde portfolio — ' + (name || 'Visitante'));
-      var body = encodeURIComponent(message + '\n\n—\nDe: ' + name + ' <' + email + '>');
+      var subject = encodeURIComponent(t('contact.mailSubject', { name: name || t('contact.mailVisitor') }));
+      var body = encodeURIComponent(message + '\n\n—\n' + t('contact.mailFrom') + ': ' + name + ' <' + email + '>');
 
       window.location.href = 'mailto:' + PF.data.contact.email + '?subject=' + subject + '&body=' + body;
 

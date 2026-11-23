@@ -48,13 +48,17 @@ PF.games = PF.games || {};
     if (hud) hud.textContent = scoreP + '  —  ' + scoreC;
   }
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function showOverlay(text) {
     if (!overlay) return;
     overlay.innerHTML =
       '<div class="pf-game-over mono">' +
       '<p>' + text + '</p>' +
       '<p class="pf-game-score">' + scoreP + ' — ' + scoreC + '</p>' +
-      '<button type="button" class="pf-game-retry mono">Reintentar</button>' +
+      '<button type="button" class="pf-game-retry mono">' + t('game.retry') + '</button>' +
       '</div>';
     overlay.classList.add('visible');
     var btn = overlay.querySelector('.pf-game-retry');
@@ -79,7 +83,7 @@ PF.games = PF.games || {};
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     sfx(win ? 'finish' : 'over');
-    showOverlay(win ? '¡Ganaste!' : 'CPU gana');
+    showOverlay(win ? t('pong.win') : t('pong.lose'));
   }
 
   function update() {

@@ -43,27 +43,41 @@
     <div class="progress-bar-fill" id="progressFill"></div>
   </div>
 
+  <!-- Language toggle (ES / EN) -->
+  <button
+    class="lang-toggle mono"
+    id="langToggleBtn"
+    type="button"
+    aria-label="Cambiar idioma a inglés"
+    title="Español / English"
+  >
+    <span class="lang-opt is-active" data-lang-opt="es">ES</span>
+    <span class="lang-sep" aria-hidden="true">/</span>
+    <span class="lang-opt" data-lang-opt="en">EN</span>
+  </button>
+
   <!-- Hamburger + overlay menu -->
   <button
     class="hamburger"
     id="hamburgerBtn"
     type="button"
     aria-label="Abrir menú"
+    data-i18n-aria="nav.openMenu"
     aria-expanded="false"
     aria-controls="menuOverlay"
   >
     <span></span><span></span><span></span>
   </button>
 
-  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true" aria-label="Navegación principal">
-    <button class="menu-close" id="menuCloseBtn" type="button" aria-label="Cerrar menú">✕</button>
+  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true" aria-label="Navegación principal" data-i18n-aria="nav.mainLabel">
+    <button class="menu-close" id="menuCloseBtn" type="button" aria-label="Cerrar menú" data-i18n-aria="nav.closeMenu">✕</button>
     <ul>
-      <li><a class="mono" href="#section1" data-target="section1">HOME</a></li>
-      <li><a class="mono" href="#section2" data-target="section2">SOBRE MÍ</a></li>
-      <li><a class="mono" href="#section3" data-target="section3">LOGROS</a></li>
-      <li><a class="mono" href="#section4" data-target="section4">PROYECTOS</a></li>
-      <li><a class="mono" href="#section5" data-target="section5">FORMACIÓN</a></li>
-      <li><a class="mono" href="#section6" data-target="section6">CONTACTO</a></li>
+      <li><a class="mono" href="#section1" data-target="section1" data-i18n="nav.home">HOME</a></li>
+      <li><a class="mono" href="#section2" data-target="section2" data-i18n="nav.about">SOBRE MÍ</a></li>
+      <li><a class="mono" href="#section3" data-target="section3" data-i18n="nav.logros">LOGROS</a></li>
+      <li><a class="mono" href="#section4" data-target="section4" data-i18n="nav.proyectos">PROYECTOS</a></li>
+      <li><a class="mono" href="#section5" data-target="section5" data-i18n="nav.formacion">FORMACIÓN</a></li>
+      <li><a class="mono" href="#section6" data-target="section6" data-i18n="nav.contacto">CONTACTO</a></li>
     </ul>
   </nav>
 
@@ -75,22 +89,22 @@
 
   <main class="scroll-container" id="scrollContainer">
     <!-- 01 HOME -->
-    <section class="section" id="section1" data-index="0" aria-label="Inicio">
+    <section class="section" id="section1" data-index="0" aria-label="Inicio" data-i18n-aria="sec1.aria">
       <canvas id="particlesCanvas" aria-hidden="true"></canvas>
       <div class="ascii-deco" id="asciiDecoHero" aria-hidden="true"></div>
       <div class="hero-content">
         <div class="hero-photo-col">
           <img class="profile-photo" src="assets/img/perfil.png" width="720" height="1280"
-               alt="Retrato de Erick Luis Flores Paz" />
+               alt="Retrato de Erick Luis Flores Paz" data-i18n-alt="hero.photoAlt" />
           <a class="cv-button mono" href="assets/curriculum.pdf" target="_blank" rel="noopener"
-             aria-label="Abrir currículum en PDF (se abre en una pestaña nueva)">
+             aria-label="Abrir currículum en PDF (se abre en una pestaña nueva)" data-i18n-aria="hero.cvAria">
             <span class="cv-icon" aria-hidden="true"></span>
-            <span>$ ver_cv</span>
+            <span data-i18n="hero.cvBtn">$ ver_cv</span>
           </a>
         </div>
         <div class="hero-text-col">
           <h1 class="hero-name mono" id="heroName"></h1>
-          <p class="hero-subtitle mono">Estudiante de Ingeniería de Software · Entusiasta de algoritmos e IA</p>
+          <p class="hero-subtitle mono" data-i18n="hero.subtitle">Estudiante de Ingeniería de Software · Entusiasta de algoritmos e IA</p>
           <p class="location-badge mono">
             <span class="loc-icon" aria-hidden="true"></span>
             <span>Cochabamba, Bolivia</span>
@@ -100,9 +114,9 @@
             <div class="t-line"><span class="prompt">$</span> whoami</div>
             <div class="t-line">&gt; erick_luis_flores_paz</div>
             <div class="t-line"><span class="prompt">$</span> cat skills.txt</div>
-            <div class="t-line">&gt; C++, Flutter, Python, Web, IA</div>
+            <div class="t-line" data-i18n="hero.termSkills">&gt; C++, Flutter, Python, Web, IA</div>
             <div class="t-line"><span class="prompt">$</span> ./portfolio --interactive</div>
-            <div class="t-line">&gt; Cargando secciones... ██████████ 100%</div>
+            <div class="t-line" data-i18n="hero.termLoading">&gt; Cargando secciones... ██████████ 100%</div>
             <div class="t-line"><span class="blink-cur"></span></div>
           </div>
         </div>
@@ -110,16 +124,16 @@
     </section>
 
     <!-- 02 SOBRE MÍ (bio + tecnologías unificadas) -->
-    <section class="section section--about" id="section2" data-index="1" aria-label="Sobre mí">
+    <section class="section section--about" id="section2" data-index="1" aria-label="Sobre mí" data-i18n-aria="sec2.aria">
       <div class="bg-infinite-text" data-bg="infinite-text" aria-hidden="true"></div>
       <div class="about-merged">
-        <h2 class="section-heading mono">SOBRE <span class="accent">MÍ</span></h2>
+        <h2 class="section-heading mono" data-i18n-html="about.headingHtml">SOBRE <span class="accent">MÍ</span></h2>
         <div class="about-columns">
           <div class="about-col-bio">
             <div class="about-body" data-render="about"></div>
           </div>
           <div class="about-col-tech">
-            <p class="about-tech-label mono">// tecnologías</p>
+            <p class="about-tech-label mono" data-i18n="about.techLabel">// tecnologías</p>
             <div class="tech-hex" data-render="technologies"></div>
           </div>
         </div>
@@ -129,52 +143,52 @@
     <!-- 03 LOGROS (Tres en Raya embebido a la izquierda + poster a la derecha).
          La lluvia binaria vive como fondo de TODA la sección (canvas absoluto),
          igual que .formacion-bg en la 05: texto y juego comparten un solo espacio. -->
-    <section class="section section--poster section--logros" id="section3" data-index="2" aria-label="Logros">
+    <section class="section section--poster section--logros" id="section3" data-index="2" aria-label="Logros" data-i18n-aria="sec3.aria">
       <canvas class="poster-canvas section-bg-canvas" data-poster="logros" aria-hidden="true"></canvas>
       <div class="logros-split">
         <div class="ttt-embed">
-          <p class="ttt-embed-label mono">// tres en raya · tú vs CPU</p>
+          <p class="ttt-embed-label mono" data-i18n="logros.tttLabel">// tres en raya · tú vs CPU</p>
           <div id="ticTacToe" data-render="tictactoe"></div>
         </div>
-        <a class="poster-link logros-poster" href="logros.html" aria-label="Entrar a la sección Logros">
+        <a class="poster-link logros-poster" href="logros.html" aria-label="Entrar a la sección Logros" data-i18n-aria="logros.posterAria">
           <div class="poster-overlay">
-            <span class="poster-kicker mono">03 · LOGROS</span>
-            <span class="poster-title mono">Logros</span>
-            <span class="poster-sub mono">Medalla de Oro nacional · Premios · Reconocimientos</span>
-            <span class="poster-enter mono">INGRESAR →</span>
+            <span class="poster-kicker mono" data-i18n="logros.kicker">03 · LOGROS</span>
+            <span class="poster-title mono" data-i18n="logros.title">Logros</span>
+            <span class="poster-sub mono" data-i18n="logros.sub">Medalla de Oro nacional · Premios · Reconocimientos</span>
+            <span class="poster-enter mono" data-i18n="poster.enter">INGRESAR →</span>
           </div>
         </a>
       </div>
-      <button type="button" class="pf-mobile-play mono" data-modal-game="tictactoe" aria-label="Jugar Tres en Raya">
+      <button type="button" class="pf-mobile-play mono" data-modal-game="tictactoe" aria-label="Jugar Tres en Raya" data-i18n-aria="logros.mobilePlayAria">
         <span class="pf-mobile-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5Z"/></svg></span>
-        <span>Jugar</span>
+        <span data-i18n="game.play">Jugar</span>
       </button>
     </section>
 
     <!-- 04 PROYECTOS (poster izquierda + Blocks 3D jugable in-place a la derecha) -->
-    <section class="section section--poster section--proyectos" id="section4" data-index="3" aria-label="Proyectos">
+    <section class="section section--poster section--proyectos" id="section4" data-index="3" aria-label="Proyectos" data-i18n-aria="sec4.aria">
       <canvas class="poster-canvas section-bg-canvas" data-poster="proyectos" aria-hidden="true"></canvas>
       <div class="proyectos-sweep" aria-hidden="true"></div>
       <div class="proyectos-split">
-        <a class="poster-link proyectos-poster" href="proyectos.html" aria-label="Entrar a la sección Proyectos">
+        <a class="poster-link proyectos-poster" href="proyectos.html" aria-label="Entrar a la sección Proyectos" data-i18n-aria="proyectos.posterAria">
           <div class="poster-overlay">
-            <span class="poster-kicker mono">04 · PROYECTOS</span>
-            <span class="poster-title mono">Proyectos</span>
-            <span class="poster-sub mono">Tetris · Tic-Tac-Toe · Billetes · EcoAlerta</span>
-            <span class="poster-enter mono">INGRESAR →</span>
+            <span class="poster-kicker mono" data-i18n="proyectos.kicker">04 · PROYECTOS</span>
+            <span class="poster-title mono" data-i18n="proyectos.title">Proyectos</span>
+            <span class="poster-sub mono" data-i18n="proyectos.sub">Tetris · Tic-Tac-Toe · Billetes · EcoAlerta</span>
+            <span class="poster-enter mono" data-i18n="poster.enter">INGRESAR →</span>
           </div>
         </a>
         <div class="blocks-embed" id="blocksEmbed" data-embed="blocks"></div>
       </div>
-      <button type="button" class="pf-mobile-play mono" data-modal-game="blocks" aria-label="Jugar Blocks 3D">
+      <button type="button" class="pf-mobile-play mono" data-modal-game="blocks" aria-label="Jugar Blocks 3D" data-i18n-aria="proyectos.mobilePlayAria">
         <span class="pf-mobile-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5Z"/></svg></span>
-        <span>Jugar</span>
+        <span data-i18n="game.play">Jugar</span>
       </button>
     </section>
 
     <!-- 05 FORMACIÓN (Typer embebido a la izquierda + poster/texto a la derecha).
          Mismo tratamiento sin divisiones: .formacion-bg de fondo compartido. -->
-    <section class="section section--poster section--formacion" id="section5" data-index="4" aria-label="Formación">
+    <section class="section section--poster section--formacion" id="section5" data-index="4" aria-label="Formación" data-i18n-aria="sec5.aria">
       <div class="formacion-bg" aria-hidden="true">
         <span class="formacion-ripple"></span>
         <span class="formacion-ripple"></span>
@@ -182,56 +196,57 @@
       </div>
       <div class="formacion-split">
         <div class="typer-embed" id="typerEmbed" data-embed="typing"></div>
-        <a class="poster-link formacion-poster" href="formacion.html" aria-label="Entrar a la sección Formación">
+        <a class="poster-link formacion-poster" href="formacion.html" aria-label="Entrar a la sección Formación" data-i18n-aria="formacion.posterAria">
           <div class="poster-overlay">
-            <span class="poster-kicker mono">05 · FORMACIÓN</span>
-            <span class="poster-title mono scramble" data-scramble="Formación">Formación</span>
-            <span class="poster-sub mono">Certificados · Cursos · Campamentos ICPC</span>
-            <span class="poster-enter mono">INGRESAR →</span>
+            <span class="poster-kicker mono" data-i18n="formacion.kicker">05 · FORMACIÓN</span>
+            <span class="poster-title mono scramble" data-scramble="Formación" data-i18n-scramble="formacion.title">Formación</span>
+            <span class="poster-sub mono" data-i18n="formacion.sub">Certificados · Cursos · Campamentos ICPC</span>
+            <span class="poster-enter mono" data-i18n="poster.enter">INGRESAR →</span>
           </div>
         </a>
       </div>
-      <button type="button" class="pf-mobile-play mono" data-modal-game="typing" aria-label="Jugar Typer">
+      <button type="button" class="pf-mobile-play mono" data-modal-game="typing" aria-label="Jugar Typer" data-i18n-aria="formacion.mobilePlayAria">
         <span class="pf-mobile-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5Z"/></svg></span>
-        <span>Jugar</span>
+        <span data-i18n="game.play">Jugar</span>
       </button>
     </section>
 
     <!-- 06 CONTACTO -->
-    <section class="section section--contact" id="section6" data-index="5" aria-label="Contacto">
+    <section class="section section--contact" id="section6" data-index="5" aria-label="Contacto" data-i18n-aria="sec6.aria">
       <canvas class="green-lights-canvas" data-bg="green-lights" aria-hidden="true"></canvas>
-      <h2 class="section-heading mono">CONTACTO</h2>
+      <h2 class="section-heading mono" data-i18n="contact.heading">CONTACTO</h2>
       <div class="contact-grid">
         <form class="terminal-form" id="contactForm" novalidate>
           <div class="cmd-line">$ send-message --to=erick</div>
 
           <div class="form-field">
-            <label class="mono" for="cf-name">nombre:</label>
-            <input class="mono" id="cf-name" name="name" type="text" required autocomplete="name" placeholder="tu_nombre" />
+            <label class="mono" for="cf-name" data-i18n="contact.nameLabel">nombre:</label>
+            <input class="mono" id="cf-name" name="name" type="text" required autocomplete="name" placeholder="tu_nombre" data-i18n-placeholder="contact.namePlaceholder" />
           </div>
 
           <div class="form-field">
-            <label class="mono" for="cf-email">email:</label>
-            <input class="mono" id="cf-email" name="email" type="email" required autocomplete="email" placeholder="tu@email.com" />
+            <label class="mono" for="cf-email" data-i18n="contact.emailLabel">email:</label>
+            <input class="mono" id="cf-email" name="email" type="email" required autocomplete="email" placeholder="tu@email.com" data-i18n-placeholder="contact.emailPlaceholder" />
           </div>
 
           <div class="form-field">
-            <label class="mono" for="cf-msg">mensaje:</label>
-            <textarea class="mono" id="cf-msg" name="message" rows="3" required placeholder="Escribe tu mensaje..."></textarea>
+            <label class="mono" for="cf-msg" data-i18n="contact.msgLabel">mensaje:</label>
+            <textarea class="mono" id="cf-msg" name="message" rows="3" required placeholder="Escribe tu mensaje..." data-i18n-placeholder="contact.msgPlaceholder"></textarea>
           </div>
 
-          <button type="submit" class="send-btn mono">enviar_mensaje →</button>
+          <button type="submit" class="send-btn mono" data-i18n="contact.sendBtn">enviar_mensaje →</button>
         </form>
 
         <div class="contact-side">
           <p class="contact-info mono">Cochabamba, Bolivia · +591 63710729</p>
-          <ul class="social-3d" data-render="socials-3d" aria-label="Contacto y redes de Erick"></ul>
+          <ul class="social-3d" data-render="socials-3d" aria-label="Contacto y redes de Erick" data-i18n-aria="contact.socialsAria"></ul>
         </div>
       </div>
     </section>
   </main>
 
   <!-- Scripts: classic defer, single window.PF namespace (D1) -->
+  <script src="js/i18n.js" defer></script>
   <script src="js/content.js" defer></script>
   <script src="js/particles.js" defer></script>
   <script src="js/posters.js" defer></script>

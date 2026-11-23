@@ -57,13 +57,17 @@ PF.games = PF.games || {};
     if (hud) hud.textContent = 'SCORE: ' + score;
   }
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
   function showOverlay(text) {
     if (!overlay) return;
     overlay.innerHTML =
       '<div class="pf-game-over mono">' +
       '<p>' + text + '</p>' +
-      '<p class="pf-game-score">Puntaje: ' + score + '</p>' +
-      '<button type="button" class="pf-game-retry mono">Reintentar</button>' +
+      '<p class="pf-game-score">' + t('snake.score', { score: score }) + '</p>' +
+      '<button type="button" class="pf-game-retry mono">' + t('game.retry') + '</button>' +
       '</div>';
     overlay.classList.add('visible');
     var btn = overlay.querySelector('.pf-game-retry');

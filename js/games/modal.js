@@ -80,8 +80,21 @@ PF.games = PF.games || {};
     }
   }
 
+  function t(key, params) {
+    return (PF.i18n && PF.i18n.t) ? PF.i18n.t(key, params) : key;
+  }
+
+  function getMeta(gameId) {
+    var base = PF.games.META[gameId];
+    if (!base) return null;
+    return {
+      title: t('games.meta.' + gameId + '.title') || base.title,
+      hint: t('games.meta.' + gameId + '.hint') || base.hint
+    };
+  }
+
   function open(gameId, triggerEl) {
-    var meta = PF.games.META[gameId];
+    var meta = getMeta(gameId);
     var mod = PF.games[gameId];
     if (!meta || !mod || overlay) return;
 
@@ -108,7 +121,7 @@ PF.games = PF.games || {};
     var closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'pf-modal-close';
-    closeBtn.setAttribute('aria-label', 'Cerrar juego');
+    closeBtn.setAttribute('aria-label', t('game.close'));
     closeBtn.textContent = '[X]';
     closeBtn.addEventListener('click', function () { close(); });
 
@@ -186,15 +199,15 @@ PF.games = PF.games || {};
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 6h10a5 5 0 0 1 5 5v.8a4.2 4.2 0 0 1-7.7 2.36l-.3-.46a1.2 1.2 0 0 0-1-.54H10.9a1.2 1.2 0 0 0-1 .54l-.3.46A4.2 4.2 0 0 1 2 11.8V11a5 5 0 0 1 5-5Zm-.5 3a.9.9 0 0 0-.9.9v.6h-.6a.9.9 0 0 0 0 1.8h.6v.6a.9.9 0 0 0 1.8 0v-.6h.6a.9.9 0 0 0 0-1.8h-.6v-.6a.9.9 0 0 0-.9-.9Zm9.25.25a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm2 2.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"/></svg>';
 
   function makeBadge(gameId) {
-    var meta = PF.games.META[gameId] || {};
+    var meta = getMeta(gameId) || {};
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'pf-play-badge mono';
     btn.setAttribute('data-game-trigger', gameId);
-    btn.setAttribute('aria-label', 'Jugar ' + (meta.title || gameId));
+    btn.setAttribute('aria-label', t('games.playNamed', { name: meta.title || gameId }));
     btn.innerHTML =
       '<span class="pf-play-icon" aria-hidden="true">' + GAMEPAD_SVG + '</span>' +
-      '<span class="pf-play-text">Jugar</span>';
+      '<span class="pf-play-text">' + t('game.play') + '</span>';
 
     var hoverTimer = null;
     function arm() { btn.classList.add('pf-play-armed'); }

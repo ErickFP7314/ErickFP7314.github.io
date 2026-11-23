@@ -189,6 +189,51 @@ button {
   box-shadow: 0 0 10px var(--green-glow);
 }
 
+/* ===== Language toggle (ES / EN) ===== */
+.lang-toggle {
+  position: fixed;
+  top: 20px;
+  right: 74px;
+  height: 44px;
+  padding: 0 12px;
+  z-index: var(--z-chrome);
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--gray-dim);
+  border-radius: 6px;
+  color: var(--gray-text);
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.lang-toggle:hover,
+.lang-toggle:focus-visible {
+  border-color: var(--green-pure);
+  box-shadow: 0 0 14px var(--green-glow);
+  background: rgba(17, 17, 17, 0.92);
+}
+
+.lang-toggle .lang-opt {
+  color: var(--gray-text);
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.lang-toggle .lang-opt.is-active {
+  color: var(--green-pure);
+  font-weight: 700;
+  text-shadow: 0 0 8px var(--green-glow);
+}
+
+.lang-toggle .lang-sep {
+  color: var(--gray-dim);
+}
+
 /* ===== Hamburger + overlay menu ===== */
 .hamburger {
   position: fixed;
